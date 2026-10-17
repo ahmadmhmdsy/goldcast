@@ -1,0 +1,202 @@
+{
+  "passed": {
+    "weekly": {
+      "C1": false,
+      "C2": true,
+      "C3": false
+    },
+    "monthly": {
+      "C1": false,
+      "C2": false,
+      "C3": false
+    }
+  },
+  "scores": {
+    "weekly": {
+      "n_test": 615,
+      "test_first": "2015-01-02",
+      "test_last": "2026-10-09",
+      "n_regime": 197,
+      "point": {
+        "rw": {
+          "mse": 0.00048762239783662275,
+          "mae": 0.01657842311260514,
+          "mse_ratio_vs_rw": 1.0,
+          "dm": NaN,
+          "p": NaN,
+          "mse_regime": 0.0006504516649499282,
+          "mse_ratio_regime": 1.0,
+          "p_regime": NaN
+        },
+        "chronos": {
+          "mse": 0.0004867569200016161,
+          "mae": 0.016482042979110753,
+          "mse_ratio_vs_rw": 0.9982251064781962,
+          "dm": 0.1749785103925528,
+          "p": 0.4305771016129841,
+          "mse_regime": 0.0006393397682986676,
+          "mse_ratio_regime": 0.982916645079053,
+          "p_regime": 0.17008632877590135,
+          "p_holm": 1.0
+        }
+      },
+      "direction": {
+        "always_up": {
+          "hit": 0.5528455284552846,
+          "hit_always_up": 0.5528455284552846,
+          "pt": NaN,
+          "p": NaN,
+          "hit_regime": 0.5888324873096447,
+          "strategy": {
+            "strategy": {
+              "total_logret": 1.2594880925924954,
+              "ann_ret": 0.10649330213790205,
+              "sharpe": 0.6711495060774014
+            },
+            "buy_hold": {
+              "total_logret": 1.2599880925924953,
+              "ann_ret": 0.10653557856066628,
+              "sharpe": 0.6713903311368401
+            },
+            "time_long": 1.0,
+            "trades": 1
+          }
+        },
+        "chronos": {
+          "hit": 0.5528455284552846,
+          "hit_always_up": 0.5528455284552846,
+          "pt": NaN,
+          "p": NaN,
+          "hit_regime": 0.5888324873096447,
+          "strategy": {
+            "strategy": {
+              "total_logret": 1.2594880925924954,
+              "ann_ret": 0.10649330213790205,
+              "sharpe": 0.6711495060774014
+            },
+            "buy_hold": {
+              "total_logret": 1.2599880925924953,
+              "ann_ret": 0.10653557856066628,
+              "sharpe": 0.6713903311368401
+            },
+            "time_long": 1.0,
+            "trades": 1
+          },
+          "p_holm": NaN
+        }
+      },
+      "quantile": {
+        "qbase": {
+          "pinball": 0.005405292062764812,
+          "pinball_regime": 0.006325513400966146,
+          "coverage": 0.7804878048780488,
+          "coverage_regime": 0.7208121827411168,
+          "dm_vs_qbase": NaN,
+          "p_vs_qbase": NaN
+        },
+        "chronos": {
+          "pinball": 0.005344838202130693,
+          "pinball_regime": 0.006203414385536326,
+          "coverage": 0.8065040650406504,
+          "coverage_regime": 0.7563451776649747,
+          "dm_vs_qbase": 1.495215130097199,
+          "p_vs_qbase": 0.06768603729200497,
+          "p_holm": 0.3384301864600248
+        }
+      }
+    },
+    "monthly": {
+      "n_test": 140,
+      "test_first": "2015-01-30",
+      "test_last": "2026-08-31",
+      "n_regime": 44,
+      "point": {
+        "rw": {
+          "mse": 0.0019349159741468946,
+          "mae": 0.034394305610458115,
+          "mse_ratio_vs_rw": 1.0,
+          "dm": NaN,
+          "p": NaN,
+          "mse_regime": 0.0029362808133542753,
+          "mse_ratio_regime": 1.0,
+          "p_regime": NaN
+        },
+        "chronos": {
+          "mse": 0.001896748285426046,
+          "mae": 0.03413539379962105,
+          "mse_ratio_vs_rw": 0.9802742396926685,
+          "dm": 0.5280937265328756,
+          "p": 0.29913817843125484,
+          "mse_regime": 0.002765358724029676,
+          "mse_ratio_regime": 0.9417895970483335,
+          "p_regime": 0.19615332893045012,
+          "p_holm": 1.0
+        }
+      },
+      "direction": {
+        "always_up": {
+          "hit": 0.5571428571428572,
+          "hit_always_up": 0.5571428571428572,
+          "pt": NaN,
+          "p": NaN,
+          "hit_regime": 0.6590909090909091,
+          "strategy": {
+            "strategy": {
+              "total_logret": 1.1857253650252868,
+              "ann_ret": 0.10163360271645316,
+              "sharpe": 0.6772015384782166
+            },
+            "buy_hold": {
+              "total_logret": 1.1862253650252867,
+              "ann_ret": 0.10167645985931029,
+              "sharpe": 0.6775671510425234
+            },
+            "time_long": 1.0,
+            "trades": 1
+          }
+        },
+        "chronos": {
+          "hit": 0.55,
+          "hit_always_up": 0.5571428571428572,
+          "pt": -0.8979698989485021,
+          "p": 0.8153992012995581,
+          "hit_regime": 0.6590909090909091,
+          "strategy": {
+            "strategy": {
+              "total_logret": 1.1674189605342846,
+              "ann_ret": 0.10006448233151011,
+              "sharpe": 0.6667434306215821
+            },
+            "buy_hold": {
+              "total_logret": 1.1862253650252867,
+              "ann_ret": 0.10167645985931029,
+              "sharpe": 0.6775671510425234
+            },
+            "time_long": 0.9928571428571429,
+            "trades": 3
+          },
+          "p_holm": 1.0
+        }
+      },
+      "quantile": {
+        "qbase": {
+          "pinball": 0.010929540294472212,
+          "pinball_regime": 0.01315438566921338,
+          "coverage": 0.7642857142857142,
+          "coverage_regime": 0.6590909090909091,
+          "dm_vs_qbase": NaN,
+          "p_vs_qbase": NaN
+        },
+        "chronos": {
+          "pinball": 0.010933834201130638,
+          "pinball_regime": 0.013080130230554475,
+          "coverage": 0.7571428571428571,
+          "coverage_regime": 0.6590909090909091,
+          "dm_vs_qbase": -0.030467376778029503,
+          "p_vs_qbase": 0.5121309932737156,
+          "p_holm": 1.0
+        }
+      }
+    }
+  }
+}

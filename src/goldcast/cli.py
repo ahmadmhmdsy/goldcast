@@ -89,6 +89,51 @@ def cmd_forecast(cfg, args):
                 print(f"  {task:<9} {name:<9} {np.round(p.ravel(), 5).tolist()}")
 
 
+def cmd_chronos(cfg, args):
+    """Chronos-2 arm: its own Holm family against rw, qbase and always-up (R-002 dated note)."""
+    from goldcast.evaluation import metrics as M
+    from goldcast.evaluation.walkforward import walk_forward
+    from goldcast.models.foundation import chronos_forecasts, load_pipeline
+
+    pipe, t0, scores = load_pipeline(args.threads), time.time(), {}
+    for f in _freqs(cfg, args.freq):
+        fs = cfg.freqs[f]
+        X, y = _panel(cfg, f)
+        q = chronos_forecasts(pipe, y, cfg.test_start, cfg.quantiles, limit=args.limit)
+        X, y = X.loc[: q.index.max()], y.loc[: q.index.max()]
+        mid = q.iloc[:, list(cfg.quantiles).index(0.5)]
+        base = {t: walk_forward(lambda t=t: REGISTRY[t][m](cfg, fs), X, y, cfg.test_start, fs.refit_every)
+                for t, m in (("point", "rw"), ("quantile", "qbase"), ("direction", "always_up"))}
+        preds = {"point": {"rw": base["point"], "chronos": mid},
+                 "quantile": {"qbase": base["quantile"], "chronos": q},
+                 "direction": {"always_up": base["direction"], "chronos": (mid > 0).astype(float)}}
+        scores[f] = score_freq(cfg, fs, y, preds)
+        print(f"  {f}: {len(q)} forecasts, {time.time() - t0:.0f}s")
+    fam = {}
+    for f, s in scores.items():
+        fam[(f, "point")] = s["point"]["chronos"]["p"]
+        fam[(f, "direction")] = s["direction"]["chronos"]["p"]
+        fam[(f, "quantile")] = s["quantile"]["chronos"]["p_vs_qbase"]
+    for (f, t), p in M.holm(fam).items():
+        scores[f][t]["chronos"]["p_holm"] = p
+    a, gates = cfg.alpha, {}
+    for f, s in scores.items():
+        pt, dr, qt = s["point"]["chronos"], s["direction"]["chronos"], s["quantile"]
+        gates[f] = {
+            "C1": bool(pt["p_holm"] < a and pt["mse_ratio_regime"] < 1),
+            "C2": bool(qt["chronos"]["pinball"] < qt["qbase"]["pinball"] and 0.75 <= qt["chronos"]["coverage"] <= 0.85),
+            "C3": bool(dr["p_holm"] < a and dr["hit"] > dr["hit_always_up"]),
+        }
+    out = REPORTS / ("chronos_smoke" if args.limit else "chronos")
+    out.mkdir(parents=True, exist_ok=True)
+    for f, s in scores.items():
+        (out / f"{f}.md").write_text(to_markdown(f, s), encoding="utf-8")
+        print("\n" + to_markdown(f, s))
+    (out / "gates.json").write_text(json.dumps({"passed": gates, "scores": scores}, indent=2, default=_json_default))
+    print("Chronos gates passed (True = hypothesis of no skill rejected):", gates)
+    print(f"elapsed {time.time() - t0:.0f}s")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="goldcast")
     ap.add_argument("--config", default=None)
@@ -98,10 +143,14 @@ def main(argv=None):
     for name in ("build", "backtest", "forecast"):
         p = sub.add_parser(name)
         p.add_argument("--freq", default="all", choices=["weekly", "monthly", "all"])
+    p = sub.add_parser("chronos")
+    p.add_argument("--freq", default="all", choices=["weekly", "monthly", "all"])
+    p.add_argument("--limit", type=int, default=None, help="smoke run: first N test rows only")
+    p.add_argument("--threads", type=int, default=10)
     args = ap.parse_args(argv)
     cfg = load_config(args.config) if args.config else load_config()
     {"fetch": cmd_fetch, "build": cmd_build, "backtest": cmd_backtest,
-     "forecast": cmd_forecast}[args.cmd](cfg, args)
+     "forecast": cmd_forecast, "chronos": cmd_chronos}[args.cmd](cfg, args)
 
 
 if __name__ == "__main__":

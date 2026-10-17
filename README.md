@@ -16,12 +16,25 @@ Nothing beat the naive baselines. That matches the literature (Hassani et al. 20
 
 Full tables: `reports/<freq>/report.md`; gate verdicts: `reports/gates.json`.
 
+### Chronos-2 zero-shot arm (2026-10-17, CPU, 83 s)
+
+`python -m goldcast chronos --freq all` runs `amazon/chronos-2` on gold's own return history. It is scored against rw, qbase and always-up, as a separate Holm family. Weights are about 460 MB, and CPU torch must be installed in the venv.
+
+| gate | weekly | monthly |
+|---|---|---|
+| C1 point (MSE/rw, Holm p) | 0.998, 1.0 — fail | 0.980, 1.0 — fail |
+| C2 interval (pinball vs qbase, coverage) | 0.005345 vs 0.005405, 0.807 — pass | 0.010934 vs 0.010930, 0.757 — fail |
+| C3 direction | median always > 0, so it acts as always-up — fail | 0.550 vs 0.557 — fail |
+
+The weekly interval gain is small, at DM p = 0.068 unadjusted, and comes from a single run. Tables are in `reports/chronos/`.
+
 ## Layout
 
     configs/default.toml        series catalog, publication lags, windows, test window
     src/goldcast/data/          fetchers (Yahoo, FRED csv, GPR xls) and parquet store + manifest
     src/goldcast/features/      point-in-time panel: values moved to availability date, as-of join
-    src/goldcast/models/        baselines, ridge/logit, LightGBM point/quantile/classifier, registry
+    src/goldcast/models/        baselines, ridge/logit, LightGBM point/quantile/classifier, registry;
+                                foundation.py = Chronos-2 zero-shot arm
     src/goldcast/evaluation/    walk-forward (expanding, purged), DM, PT, pinball, Holm, long/flat
     tests/                      truncation leakage test, metrics, walk-forward purging (offline)
 
