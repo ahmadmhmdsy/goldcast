@@ -1,0 +1,32 @@
+[project]
+name = "goldcast"
+version = "0.1.0"
+description = "Point-in-time gold price forecasting from free cross-asset and macro data, judged against a random walk."
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.26",
+    "pandas>=2.2",
+    "pyarrow>=15",
+    "scipy>=1.12",
+    "scikit-learn>=1.4",
+    "lightgbm>=4.3",
+    "yfinance>=0.2.40",
+    "requests>=2.31",
+    "xlrd>=2.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+goldcast = "goldcast.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/goldcast"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

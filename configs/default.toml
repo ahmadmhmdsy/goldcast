@@ -1,0 +1,128 @@
+# Experiment R-002 configuration. Adding a feature = adding a [[series]] row.
+#
+# Every series is placed on the timeline by when it was PUBLISHED, not when it
+# was observed: available_date = observation_date + lag_bdays business days.
+# Features at a decision date only see values available on or before it.
+
+[data]
+start = "2000-01-01"
+raw_dir = "data/raw"
+
+[experiment]
+target = "gold"               # series name whose log return is forecast
+test_start = "2015-01-01"
+regime_start = "2023-01-01"   # sub-window reported separately (post-2022 regime)
+quantiles = [0.1, 0.5, 0.9]   # 0.1-0.9 = the 80% interval
+cost_bp = 5                   # per position change, secondary strategy check
+alpha = 0.05
+
+[freq.weekly]
+rule = "W-FRI"
+windows = [1, 4, 13, 26, 52]  # in periods
+refit_every = 4
+baseline_quantile_window = 156
+periods_per_year = 52
+
+[freq.monthly]
+rule = "ME"
+windows = [1, 3, 6, 12]
+refit_every = 3
+baseline_quantile_window = 60
+periods_per_year = 12
+
+# kinds: logret = log change over each window; diff = change over each window;
+#        level = current value; rvol = annualised realised vol over rvol_days
+#        (daily data). smooth_days averages the daily series first.
+
+[[series]]
+name = "gold"
+source = "yahoo"
+id = "GC=F"
+lag_bdays = 0
+kinds = ["logret", "rvol"]
+rvol_days = [20, 60]
+
+[[series]]
+name = "silver"
+source = "yahoo"
+id = "SI=F"
+lag_bdays = 0
+kinds = ["logret"]
+
+[[series]]
+name = "copper"
+source = "yahoo"
+id = "HG=F"
+lag_bdays = 0
+kinds = ["logret"]
+
+[[series]]
+name = "wti"
+source = "yahoo"
+id = "CL=F"
+lag_bdays = 0
+kinds = ["logret"]
+
+[[series]]
+name = "dxy"
+source = "yahoo"
+id = "DX-Y.NYB"
+lag_bdays = 0
+kinds = ["logret"]
+
+[[series]]
+name = "spx"
+source = "yahoo"
+id = "^GSPC"
+lag_bdays = 0
+kinds = ["logret"]
+
+[[series]]
+name = "vix"
+source = "yahoo"
+id = "^VIX"
+lag_bdays = 0
+kinds = ["level", "diff"]
+
+[[series]]
+name = "gvz"
+source = "fred"
+id = "GVZCLS"
+lag_bdays = 1
+kinds = ["level", "diff"]
+
+[[series]]
+name = "real10"
+source = "fred"
+id = "DFII10"
+lag_bdays = 1
+kinds = ["level", "diff"]
+
+[[series]]
+name = "be10"
+source = "fred"
+id = "T10YIE"
+lag_bdays = 1
+kinds = ["level", "diff"]
+
+[[series]]
+name = "y2"
+source = "fred"
+id = "DGS2"
+lag_bdays = 1
+kinds = ["level", "diff"]
+
+[[series]]
+name = "y10"
+source = "fred"
+id = "DGS10"
+lag_bdays = 1
+kinds = ["level", "diff"]
+
+[[series]]
+name = "gpr"
+source = "gpr"
+id = "GPRD"
+lag_bdays = 7
+smooth_days = 7
+kinds = ["level", "diff"]

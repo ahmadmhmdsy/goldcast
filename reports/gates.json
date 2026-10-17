@@ -1,0 +1,19 @@
+{
+  "H1": {
+    "falsified": false,
+    "by": [],
+    "rule": "point model beats rw: DM p_holm < alpha AND lower MSE on 2023+"
+  },
+  "H3": {
+    "falsified": false,
+    "by": [],
+    "rule": "direction model hit > always-up AND PT p_holm < alpha"
+  },
+  "H2": {
+    "falsified": true,
+    "by": [
+      "pinball not below qbase"
+    ],
+    "rule": "weekly lgbm_q pinball < qbase AND 80% coverage in [0.75, 0.85]"
+  }
+}
