@@ -1,0 +1,32 @@
+# R-004 blocks - verdict: **refuted** (Holm family 12)
+
+## weekly (615 origins, 2015-01-02..2026-10-09; 197 in 2023+)
+RW mse 0.000488; GARCH pinball 0.005330; always-up hit 0.553
+
+| arm | feats | mse/rw | mse/rw 2023+ | p pt | p_holm pt | pinball | pin/garch | cov | p q | p_holm q | hit | perm dmse |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| base | 74 | 1.0277 | 0.9805 | - | - | 0.005421 | 1.0170 | 0.785 | - | - | 0.515 | - |
+| B1 | 86 | 1.0433 | 0.9971 | 0.9323 | 1.0000 | 0.005382 | 1.0096 | 0.780 | 0.0199 | 0.2388 | 0.540 | -0.0013 |
+| B2 | 84 | 1.0336 | 0.9904 | 0.6868 | - | 0.005387 | 1.0107 | 0.776 | 0.0675 | - | 0.528 | 0.0039 |
+| B3 | 92 | 1.0513 | 0.9874 | 0.9701 | 1.0000 | 0.005401 | 1.0132 | 0.777 | 0.1694 | 1.0000 | 0.506 | 0.0056 |
+| B4 | 79 | 1.0519 | 1.0129 | 0.9874 | 1.0000 | 0.005406 | 1.0142 | 0.777 | 0.2553 | 1.0000 | 0.514 | -0.0307 |
+| ALL | 119 | 1.0261 | 0.9859 | 0.4556 | - | 0.005367 | 1.0068 | 0.784 | 0.0199 | - | 0.525 | - |
+
+## monthly (140 origins, 2015-01-30..2026-08-31; 44 in 2023+)
+RW mse 0.001935; GARCH pinball 0.010723; always-up hit 0.557
+
+| arm | feats | mse/rw | mse/rw 2023+ | p pt | p_holm pt | pinball | pin/garch | cov | p q | p_holm q | hit | perm dmse |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| base | 61 | 1.0863 | 0.9744 | - | - | 0.011248 | 1.0489 | 0.721 | - | - | 0.529 | - |
+| B1 | 71 | 1.0766 | 0.9594 | 0.3546 | 1.0000 | 0.011171 | 1.0417 | 0.686 | 0.2067 | 1.0000 | 0.543 | -0.0208 |
+| B2 | 69 | 1.0788 | 0.9644 | 0.3413 | - | 0.011301 | 1.0539 | 0.707 | 0.7198 | - | 0.543 | -0.0087 |
+| B3 | 76 | 1.0544 | 0.9460 | 0.1888 | 1.0000 | 0.011376 | 1.0608 | 0.721 | 0.8190 | 1.0000 | 0.543 | 0.0221 |
+| B4 | 65 | 1.0845 | 0.9396 | 0.4665 | 1.0000 | 0.011163 | 1.0410 | 0.707 | 0.2099 | 1.0000 | 0.529 | -0.0083 |
+| ALL | 98 | 1.1126 | 1.0073 | 0.7506 | - | 0.011362 | 1.0595 | 0.707 | 0.7633 | - | 0.557 | - |
+
+## Gates
+
+- B1: {'weekly': {'P_falsified': False, 'Q_falsified': False, 'P_useful': False, 'Q_useful': False}, 'monthly': {'P_falsified': False, 'Q_falsified': False, 'P_useful': False, 'Q_useful': False}, 'any_gate': False, 'useful': False}
+- B2: {'status': 'inconclusive: only USDCNY and USDINR passed the availability rule'}
+- B3: {'weekly': {'P_falsified': False, 'Q_falsified': False, 'P_useful': False, 'Q_useful': False}, 'monthly': {'P_falsified': False, 'Q_falsified': False, 'P_useful': False, 'Q_useful': False}, 'any_gate': False, 'useful': False}
+- B4: {'weekly': {'P_falsified': False, 'Q_falsified': False, 'P_useful': False, 'Q_useful': False}, 'monthly': {'P_falsified': False, 'Q_falsified': False, 'P_useful': False, 'Q_useful': False}, 'any_gate': False, 'useful': False}

@@ -1,0 +1,337 @@
+{
+  "verdict": "refuted",
+  "gates": {
+    "B1": {
+      "weekly": {
+        "P_falsified": false,
+        "Q_falsified": false,
+        "P_useful": false,
+        "Q_useful": false
+      },
+      "monthly": {
+        "P_falsified": false,
+        "Q_falsified": false,
+        "P_useful": false,
+        "Q_useful": false
+      },
+      "any_gate": false,
+      "useful": false
+    },
+    "B2": {
+      "status": "inconclusive: only USDCNY and USDINR passed the availability rule"
+    },
+    "B3": {
+      "weekly": {
+        "P_falsified": false,
+        "Q_falsified": false,
+        "P_useful": false,
+        "Q_useful": false
+      },
+      "monthly": {
+        "P_falsified": false,
+        "Q_falsified": false,
+        "P_useful": false,
+        "Q_useful": false
+      },
+      "any_gate": false,
+      "useful": false
+    },
+    "B4": {
+      "weekly": {
+        "P_falsified": false,
+        "Q_falsified": false,
+        "P_useful": false,
+        "Q_useful": false
+      },
+      "monthly": {
+        "P_falsified": false,
+        "Q_falsified": false,
+        "P_useful": false,
+        "Q_useful": false
+      },
+      "any_gate": false,
+      "useful": false
+    }
+  },
+  "holm_family_size": 12,
+  "scores": {
+    "weekly": {
+      "n_test": 615,
+      "test_first": "2015-01-02",
+      "test_last": "2026-10-09",
+      "n_regime": 197,
+      "rw": {
+        "mse": 0.00048762239783662275,
+        "mse_regime": 0.0006504516649499282
+      },
+      "garch": {
+        "pinball": 0.00533044483744564,
+        "pinball_regime": 0.00618145936484638
+      },
+      "hit_always_up": 0.5528455284552846,
+      "arms": {
+        "base": {
+          "n_features": 74,
+          "mse": 0.000501117964430259,
+          "mse_regime": 0.000637770494094652,
+          "mse_ratio_vs_rw": 1.027676264776824,
+          "mse_ratio_vs_rw_regime": 0.9805040535083381,
+          "pinball": 0.005420823933161466,
+          "pinball_regime": 0.006230334192618878,
+          "pinball_ratio_vs_garch": 1.0169552632982757,
+          "coverage": 0.7853658536585366,
+          "coverage_regime": 0.7563451776649747,
+          "hit": 0.5154471544715448
+        },
+        "B1": {
+          "n_features": 86,
+          "mse": 0.0005087239409528321,
+          "mse_regime": 0.0006485895820219083,
+          "mse_ratio_vs_rw": 1.0432743516496128,
+          "mse_ratio_vs_rw_regime": 0.9971372462730752,
+          "pinball": 0.005381508988472675,
+          "pinball_regime": 0.006193472469147073,
+          "pinball_ratio_vs_garch": 1.0095797166248335,
+          "coverage": 0.7804878048780488,
+          "coverage_regime": 0.7614213197969543,
+          "hit": 0.5398373983739837,
+          "dm_point": -1.4948633627203456,
+          "p_point": 0.9322680718645591,
+          "dm_quantile": 2.0602758760748006,
+          "p_quantile": 0.01989648450235982,
+          "p_point_regime": 0.8421581027487067,
+          "p_quantile_regime": 0.11746400470320913,
+          "perm_mse_increase": -0.001292222838945639,
+          "perm_sd": 0.004954167249748559,
+          "p_holm_point": 1.0,
+          "p_holm_quantile": 0.23875781402831783
+        },
+        "B2": {
+          "n_features": 84,
+          "mse": 0.0005039983538926469,
+          "mse_regime": 0.0006441906399775872,
+          "mse_ratio_vs_rw": 1.0335832728945131,
+          "mse_ratio_vs_rw_regime": 0.9903743424612144,
+          "pinball": 0.005387380010599101,
+          "pinball_regime": 0.006244118301529932,
+          "pinball_ratio_vs_garch": 1.010681129791176,
+          "coverage": 0.775609756097561,
+          "coverage_regime": 0.7563451776649747,
+          "hit": 0.5284552845528455,
+          "dm_point": -0.4869724751962781,
+          "p_point": 0.6867741849864858,
+          "dm_quantile": 1.4964727047086022,
+          "p_quantile": 0.06752217360651824,
+          "p_point_regime": 0.7238019159340825,
+          "p_quantile_regime": 0.636533110135052,
+          "perm_mse_increase": 0.00391230158999295,
+          "perm_sd": 0.00910173825250618
+        },
+        "B3": {
+          "n_features": 92,
+          "mse": 0.0005126278377245262,
+          "mse_regime": 0.0006422400994586381,
+          "mse_ratio_vs_rw": 1.0512803349453228,
+          "mse_ratio_vs_rw_regime": 0.9873755946309675,
+          "pinball": 0.0054006878645072275,
+          "pinball_regime": 0.0061839067992669125,
+          "pinball_ratio_vs_garch": 1.0131777045262977,
+          "coverage": 0.7772357723577236,
+          "coverage_regime": 0.7563451776649747,
+          "hit": 0.5056910569105691,
+          "dm_point": -1.8854791515606517,
+          "p_point": 0.9700814761190395,
+          "dm_quantile": 0.9573253392243423,
+          "p_quantile": 0.16938992689237162,
+          "p_point_regime": 0.6316437360183732,
+          "p_quantile_regime": 0.09098979026935429,
+          "perm_mse_increase": 0.005582374802637147,
+          "perm_sd": 0.008987042035941481,
+          "p_holm_point": 1.0,
+          "p_holm_quantile": 1.0
+        },
+        "B4": {
+          "n_features": 79,
+          "mse": 0.0005129254272530107,
+          "mse_regime": 0.0006588216352410853,
+          "mse_ratio_vs_rw": 1.0518906217775206,
+          "mse_ratio_vs_rw_regime": 1.012867935839324,
+          "pinball": 0.005406373499417778,
+          "pinball_regime": 0.006228306264237876,
+          "pinball_ratio_vs_garch": 1.0142443387536346,
+          "coverage": 0.7772357723577236,
+          "coverage_regime": 0.7461928934010152,
+          "hit": 0.5138211382113821,
+          "dm_point": -2.2446161586612394,
+          "p_point": 0.9874259646107442,
+          "dm_quantile": 0.6582909043590367,
+          "p_quantile": 0.2552989843869529,
+          "p_point_regime": 0.9916683097939922,
+          "p_quantile_regime": 0.47638773472324136,
+          "perm_mse_increase": -0.030678495320041233,
+          "perm_sd": 0.01056951122548391,
+          "p_holm_point": 1.0,
+          "p_holm_quantile": 1.0
+        },
+        "ALL": {
+          "n_features": 119,
+          "mse": 0.0005003320840941134,
+          "mse_regime": 0.0006412479127665408,
+          "mse_ratio_vs_rw": 1.0260646071917088,
+          "mse_ratio_vs_rw_regime": 0.9858502135064934,
+          "pinball": 0.005366839701859756,
+          "pinball_regime": 0.006130752560002441,
+          "pinball_ratio_vs_garch": 1.0068277349309476,
+          "coverage": 0.7837398373983739,
+          "coverage_regime": 0.751269035532995,
+          "hit": 0.5252032520325203,
+          "dm_point": 0.1116375374227974,
+          "p_point": 0.4555736458684861,
+          "dm_quantile": 2.060140612202723,
+          "p_quantile": 0.01990296961968898,
+          "p_point_regime": 0.6213151009298652,
+          "p_quantile_regime": 0.015545425558901007
+        }
+      }
+    },
+    "monthly": {
+      "n_test": 140,
+      "test_first": "2015-01-30",
+      "test_last": "2026-08-31",
+      "n_regime": 44,
+      "rw": {
+        "mse": 0.0019349159741468946,
+        "mse_regime": 0.0029362808133542753
+      },
+      "garch": {
+        "pinball": 0.010723300658886782,
+        "pinball_regime": 0.012804047638137977
+      },
+      "hit_always_up": 0.5571428571428572,
+      "arms": {
+        "base": {
+          "n_features": 61,
+          "mse": 0.0021019174371213734,
+          "mse_regime": 0.002861256114363284,
+          "mse_ratio_vs_rw": 1.0863094135382854,
+          "mse_ratio_vs_rw_regime": 0.9744490722243673,
+          "pinball": 0.011247775291544675,
+          "pinball_regime": 0.013676918285628363,
+          "pinball_ratio_vs_garch": 1.048909813250759,
+          "coverage": 0.7214285714285714,
+          "coverage_regime": 0.5681818181818182,
+          "hit": 0.5285714285714286
+        },
+        "B1": {
+          "n_features": 71,
+          "mse": 0.0020830404235808804,
+          "mse_regime": 0.0028170007514952454,
+          "mse_ratio_vs_rw": 1.0765534273390316,
+          "mse_ratio_vs_rw_regime": 0.9593771612999202,
+          "pinball": 0.01117076522799329,
+          "pinball_regime": 0.01352270973316081,
+          "pinball_ratio_vs_garch": 1.0417282498496094,
+          "coverage": 0.6857142857142857,
+          "coverage_regime": 0.5227272727272727,
+          "hit": 0.5428571428571428,
+          "dm_point": 0.3736030431912754,
+          "p_point": 0.3546344384336778,
+          "dm_quantile": 0.8205503283635259,
+          "p_quantile": 0.20665370869552946,
+          "p_point_regime": 0.3284734743336276,
+          "p_quantile_regime": 0.19719531077788766,
+          "perm_mse_increase": -0.020839218261887588,
+          "perm_sd": 0.023610122784988113,
+          "p_holm_point": 1.0,
+          "p_holm_quantile": 1.0
+        },
+        "B2": {
+          "n_features": 69,
+          "mse": 0.0020873998325978685,
+          "mse_regime": 0.0028317194577862745,
+          "mse_ratio_vs_rw": 1.0788064497313399,
+          "mse_ratio_vs_rw_regime": 0.964389865202111,
+          "pinball": 0.011301473594620548,
+          "pinball_regime": 0.013753071773571341,
+          "pinball_ratio_vs_garch": 1.0539174414786752,
+          "coverage": 0.7071428571428572,
+          "coverage_regime": 0.5227272727272727,
+          "hit": 0.5428571428571428,
+          "dm_point": 0.4098909505967074,
+          "p_point": 0.34125848379490786,
+          "dm_quantile": -0.5835477172759513,
+          "p_quantile": 0.7197648360158875,
+          "p_point_regime": 0.32927457116047903,
+          "p_quantile_regime": 0.6534757504075552,
+          "perm_mse_increase": -0.00865255550394851,
+          "perm_sd": 0.0072425881801960685
+        },
+        "B3": {
+          "n_features": 76,
+          "mse": 0.0020402124841490798,
+          "mse_regime": 0.0027777935651378603,
+          "mse_ratio_vs_rw": 1.0544191641441227,
+          "mse_ratio_vs_rw_regime": 0.9460244921072906,
+          "pinball": 0.011375620301030127,
+          "pinball_regime": 0.013722451602088294,
+          "pinball_ratio_vs_garch": 1.0608319828841828,
+          "coverage": 0.7214285714285714,
+          "coverage_regime": 0.5681818181818182,
+          "hit": 0.5428571428571428,
+          "dm_point": 0.8850617728027731,
+          "p_point": 0.188825893837298,
+          "dm_quantile": -0.9145620495058507,
+          "p_quantile": 0.8189973232692582,
+          "p_point_regime": 0.3174970616269059,
+          "p_quantile_regime": 0.5734212780947902,
+          "perm_mse_increase": 0.022085821296447657,
+          "perm_sd": 0.02511239185691131,
+          "p_holm_point": 1.0,
+          "p_holm_quantile": 1.0
+        },
+        "B4": {
+          "n_features": 65,
+          "mse": 0.0020984297171996276,
+          "mse_regime": 0.0027589339689674296,
+          "mse_ratio_vs_rw": 1.084506896029336,
+          "mse_ratio_vs_rw_regime": 0.9396015382519723,
+          "pinball": 0.011162531314984505,
+          "pinball_regime": 0.013299958005645568,
+          "pinball_ratio_vs_garch": 1.0409603973692296,
+          "coverage": 0.7071428571428572,
+          "coverage_regime": 0.5454545454545454,
+          "hit": 0.5285714285714286,
+          "dm_point": 0.08417578178178675,
+          "p_point": 0.46651889215771236,
+          "dm_quantile": 0.8091765532970997,
+          "p_quantile": 0.20989826264015288,
+          "p_point_regime": 0.08582287539898455,
+          "p_quantile_regime": 0.04873072978585113,
+          "perm_mse_increase": -0.008332876131612188,
+          "perm_sd": 0.012188567863195438,
+          "p_holm_point": 1.0,
+          "p_holm_quantile": 1.0
+        },
+        "ALL": {
+          "n_features": 98,
+          "mse": 0.002152800441479836,
+          "mse_regime": 0.002957740991848316,
+          "mse_ratio_vs_rw": 1.1126066817599183,
+          "mse_ratio_vs_rw_regime": 1.0073086260675204,
+          "pinball": 0.011361597712793443,
+          "pinball_regime": 0.013571916582956329,
+          "pinball_ratio_vs_garch": 1.0595243082527657,
+          "coverage": 0.7071428571428572,
+          "coverage_regime": 0.6136363636363636,
+          "hit": 0.5571428571428572,
+          "dm_point": -0.6782256899022985,
+          "p_point": 0.7506219390466927,
+          "dm_quantile": -0.7190371182591001,
+          "p_quantile": 0.7633374418698843,
+          "p_point_regime": 0.7040520073192391,
+          "p_quantile_regime": 0.37300735036762395
+        }
+      }
+    }
+  }
+}

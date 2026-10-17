@@ -19,6 +19,7 @@ class SeriesSpec:
     kinds: tuple[str, ...]
     rvol_days: tuple[int, ...] = ()
     smooth_days: int = 0
+    block: str = ""  # "" = R-002 base feature set; "B1".."B4" = R-004 blocks
 
 
 @dataclass(frozen=True)
@@ -47,6 +48,14 @@ class Config:
     def spec(self, name: str) -> SeriesSpec:
         return next(s for s in self.series if s.name == name)
 
+    @property
+    def base_series(self) -> tuple[SeriesSpec, ...]:
+        return tuple(s for s in self.series if not s.block)
+
+    @property
+    def blocks(self) -> list[str]:
+        return sorted({s.block for s in self.series if s.block})
+
 
 def load_config(path: Path | str = DEFAULT_CONFIG) -> Config:
     raw = tomllib.loads(Path(path).read_text(encoding="utf-8"))
@@ -71,6 +80,7 @@ def load_config(path: Path | str = DEFAULT_CONFIG) -> Config:
             kinds=tuple(s["kinds"]),
             rvol_days=tuple(s.get("rvol_days", ())),
             smooth_days=s.get("smooth_days", 0),
+            block=s.get("block", ""),
         )
         for s in raw["series"]
     )

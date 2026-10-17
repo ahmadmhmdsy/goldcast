@@ -126,3 +126,78 @@ id = "GPRD"
 lag_bdays = 7
 smooth_days = 7
 kinds = ["level", "diff"]
+
+# ---------------------------------------------------------------------------
+# R-004 feature blocks (AI_Research research/experiments/R-004-gold-feature-blocks.md).
+# Rows with `block` are ignored by the R-002 and R-003 commands (backtest, chronos,
+# intervals use the base rows only); `goldcast blocks` adds them one block at a time.
+# Excluded by the availability rule (free archive from 2008-01-01 or earlier):
+#   B1 GLD holdings (archive host robots.txt disallows all), COMEX registered stocks (no archive)
+#   B2 SGE Au99.99 premium (2016-12+), HK net gold exports to China (no machine-readable archive)
+#   B3 daily TPU (2015+), HY OAS BAMLH0A0HYM2 (FRED keeps 2023-10+ only)
+# B2 is left FX-only, so it is reported but not gated.
+
+[[series]]
+name = "cot_mm"
+block = "B1"
+source = "cftc"
+id = "disagg:088691"          # COMEX gold, managed-money net / open interest
+lag_bdays = 4                 # Tuesday positions, released Friday
+kinds = ["level", "diff"]
+
+[[series]]
+name = "cot_nc"
+block = "B1"
+source = "cftc"
+id = "legacy:088691"          # non-commercial net / open interest
+lag_bdays = 4
+kinds = ["level", "diff"]
+
+[[series]]
+name = "usdcny"
+block = "B2"
+source = "yahoo"
+id = "CNY=X"
+lag_bdays = 0
+kinds = ["logret"]
+
+[[series]]
+name = "usdinr"
+block = "B2"
+source = "yahoo"
+id = "INR=X"
+lag_bdays = 0
+kinds = ["logret"]
+
+[[series]]
+name = "epu"
+block = "B3"
+source = "fred"
+id = "USEPUINDXD"
+lag_bdays = 1
+smooth_days = 7               # daily EPU is noisy; smoothed like GPR (implementation choice)
+kinds = ["level", "diff"]
+
+[[series]]
+name = "move"
+block = "B3"
+source = "yahoo"
+id = "^MOVE"
+lag_bdays = 0
+kinds = ["level", "diff"]
+
+[[series]]
+name = "stlfsi"
+block = "B3"
+source = "fred"
+id = "STLFSI4"
+lag_bdays = 6
+kinds = ["level", "diff"]
+
+[[series]]
+name = "gtrends"
+block = "B4"
+source = "trends"
+id = "gold"                   # worldwide; chained weekly log changes only
+lag_bdays = 7
+kinds = ["logret"]

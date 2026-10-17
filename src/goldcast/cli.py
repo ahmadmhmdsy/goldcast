@@ -1,4 +1,4 @@
-"""Command line: fetch | build | backtest | forecast."""
+"""Command line: fetch | build | backtest | forecast | chronos | intervals | blocks."""
 
 from __future__ import annotations
 
@@ -22,9 +22,10 @@ def _freqs(cfg, which):
     return list(cfg.freqs) if which == "all" else [which]
 
 
-def _panel(cfg, freq_name):
+def _panel(cfg, freq_name, catalog=None):
+    """R-002 commands use the base series only; block rows are R-004's."""
     raw = load_raw(cfg)
-    return build_panel(raw, cfg.series, cfg.freqs[freq_name], cfg.target)
+    return build_panel(raw, catalog or cfg.base_series, cfg.freqs[freq_name], cfg.target)
 
 
 def _json_default(o):
@@ -211,6 +212,25 @@ def cmd_intervals(cfg, args):
     print(f"elapsed {time.time() - t0:.0f}s")
 
 
+def cmd_blocks(cfg, args):
+    """R-004: base vs base + one feature block, lgbm and lgbm_q."""
+    from goldcast.blocks import run_blocks, to_markdown
+
+    t0 = time.time()
+    out, preds = run_blocks(cfg, load_raw(cfg), _freqs(cfg, args.freq), args.limit, args.jobs)
+    d = REPORTS / ("blocks_smoke" if args.limit else "blocks")
+    d.mkdir(parents=True, exist_ok=True)
+    for f in _freqs(cfg, args.freq):
+        cols = {f"{a}:{m}": (p if isinstance(p, pd.Series) else p.iloc[:, 1])
+                for (ff, a, m), p in preds.items() if ff == f}
+        pd.DataFrame(cols).to_csv(d / f"{f}_predictions.csv")
+    md = to_markdown(out)
+    (d / "report.md").write_text(md, encoding="utf-8")
+    (d / "gates.json").write_text(json.dumps(out, indent=2, default=_json_default))
+    print("\n" + md)
+    print(f"elapsed {time.time() - t0:.0f}s")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="goldcast")
     ap.add_argument("--config", default=None)
@@ -229,10 +249,15 @@ def main(argv=None):
     p.add_argument("--limit", type=int, default=None, help="smoke run: first N test rows only")
     p.add_argument("--threads", type=int, default=10)
     p.add_argument("--no-chronos", action="store_true")
+    p = sub.add_parser("blocks")
+    p.add_argument("--freq", default="all", choices=["weekly", "monthly", "all"])
+    p.add_argument("--limit", type=int, default=None, help="smoke run: first N test rows only")
+    p.add_argument("--jobs", type=int, default=8)
     args = ap.parse_args(argv)
     cfg = load_config(args.config) if args.config else load_config()
     {"fetch": cmd_fetch, "build": cmd_build, "backtest": cmd_backtest,
-     "forecast": cmd_forecast, "chronos": cmd_chronos, "intervals": cmd_intervals}[args.cmd](cfg, args)
+     "forecast": cmd_forecast, "chronos": cmd_chronos, "intervals": cmd_intervals,
+     "blocks": cmd_blocks}[args.cmd](cfg, args)
 
 
 if __name__ == "__main__":
