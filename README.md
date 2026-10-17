@@ -28,13 +28,27 @@ Full tables: `reports/<freq>/report.md`; gate verdicts: `reports/gates.json`.
 
 The weekly interval gain is small, at DM p = 0.068 unadjusted, and comes from a single run. Tables are in `reports/chronos/`.
 
+### Volatility intervals, R-003 (2026-10-17, CPU, 6 min)
+
+`python -m goldcast intervals --freq all` compares 80% intervals from qbase, EWMA, GARCH(1,1)-t, LightGBM-quantile and Chronos-2.
+
+| model | weekly pinball / coverage | monthly pinball / coverage |
+|---|---|---|
+| qbase | 0.005405 / 0.780 | 0.010930 / 0.764 |
+| ewma | **0.005318** / 0.802 | 0.010744 / 0.764 |
+| garch | 0.005330 / 0.820 | **0.010723** / 0.793 |
+| lgbm_q | 0.005421 / 0.785 | 0.011248 / 0.721 |
+| chronos | 0.005345 / 0.807 | 0.010934 / 0.757 |
+
+Chronos-2's weekly interval edge comes from volatility tracking: GARCH and EWMA match or beat it. No model's gain over qbase survives Holm (weekly GARCH: raw p 0.032, p_holm 0.19). **For a planning range, use GARCH or EWMA.** Tables are in `reports/intervals/`.
+
 ## Layout
 
     configs/default.toml        series catalog, publication lags, windows, test window
     src/goldcast/data/          fetchers (Yahoo, FRED csv, GPR xls) and parquet store + manifest
     src/goldcast/features/      point-in-time panel: values moved to availability date, as-of join
     src/goldcast/models/        baselines, ridge/logit, LightGBM point/quantile/classifier, registry;
-                                foundation.py = Chronos-2 zero-shot arm
+                                foundation.py = Chronos-2 zero-shot arm; vol.py = EWMA/GARCH intervals
     src/goldcast/evaluation/    walk-forward (expanding, purged), DM, PT, pinball, Holm, long/flat
     tests/                      truncation leakage test, metrics, walk-forward purging (offline)
 

@@ -1,0 +1,116 @@
+{
+  "gates": {
+    "weekly": {
+      "V1_holds": false,
+      "V2_falsified": false,
+      "V3_falsified": false
+    },
+    "monthly": {
+      "V1_holds": false,
+      "V2_falsified": false,
+      "V3_falsified": false
+    }
+  },
+  "scores": {
+    "weekly": {
+      "n_test": 615,
+      "n_regime": 197,
+      "models": {
+        "qbase": {
+          "pinball": 0.005405292062764812,
+          "pinball_regime": 0.006325513400966146,
+          "coverage": 0.7804878048780488,
+          "coverage_regime": 0.7208121827411168,
+          "dm_vs_garch": -1.8600142230258798,
+          "p_vs_garch": 0.9683192547409353
+        },
+        "ewma": {
+          "pinball": 0.005317992950180213,
+          "pinball_regime": 0.006176254194905745,
+          "coverage": 0.8016260162601626,
+          "coverage_regime": 0.7918781725888325,
+          "dm_vs_garch": 0.7714540289876125,
+          "p_vs_garch": 0.22036732329990388
+        },
+        "garch": {
+          "pinball": 0.005330444718289021,
+          "pinball_regime": 0.006181458964739603,
+          "coverage": 0.8195121951219512,
+          "coverage_regime": 0.7918781725888325,
+          "p_vs_qbase": 0.0316807452590647
+        },
+        "lgbm_q": {
+          "pinball": 0.005420823933161466,
+          "pinball_regime": 0.006230334192618878,
+          "coverage": 0.7853658536585366,
+          "coverage_regime": 0.7563451776649747,
+          "dm_vs_garch": -2.308491077487513,
+          "p_vs_garch": 0.9893484302426362
+        },
+        "chronos": {
+          "pinball": 0.005344838202130693,
+          "pinball_regime": 0.006203414385536326,
+          "coverage": 0.8065040650406504,
+          "coverage_regime": 0.7563451776649747,
+          "dm_vs_garch": -0.7127483907012614,
+          "p_vs_garch": 0.7618638809164038
+        }
+      },
+      "p_holm": {
+        "V1": 0.19008447155438823,
+        "V3": 1.0,
+        "V2": 1.0
+      }
+    },
+    "monthly": {
+      "n_test": 140,
+      "n_regime": 44,
+      "models": {
+        "qbase": {
+          "pinball": 0.010929540294472212,
+          "pinball_regime": 0.01315438566921338,
+          "coverage": 0.7642857142857142,
+          "coverage_regime": 0.6590909090909091,
+          "dm_vs_garch": -1.0305211762027457,
+          "p_vs_garch": 0.8477223949802215
+        },
+        "ewma": {
+          "pinball": 0.010743629169370834,
+          "pinball_regime": 0.012767468451620521,
+          "coverage": 0.7642857142857142,
+          "coverage_regime": 0.6818181818181818,
+          "dm_vs_garch": -0.3265330797522247,
+          "p_vs_garch": 0.6277438937541362
+        },
+        "garch": {
+          "pinball": 0.01072330851779357,
+          "pinball_regime": 0.012804259465074115,
+          "coverage": 0.7928571428571428,
+          "coverage_regime": 0.7045454545454546,
+          "p_vs_qbase": 0.1522776050197785
+        },
+        "lgbm_q": {
+          "pinball": 0.011247775291544675,
+          "pinball_regime": 0.013676918285628363,
+          "coverage": 0.7214285714285714,
+          "coverage_regime": 0.5681818181818182,
+          "dm_vs_garch": -1.92737150621764,
+          "p_vs_garch": 0.9720134141759166
+        },
+        "chronos": {
+          "pinball": 0.010933834201130638,
+          "pinball_regime": 0.013080130230554475,
+          "coverage": 0.7571428571428571,
+          "coverage_regime": 0.6590909090909091,
+          "dm_vs_garch": -1.6747951178592173,
+          "p_vs_garch": 0.9518885709660184
+        }
+      },
+      "p_holm": {
+        "V1": 0.7613880250988925,
+        "V3": 1.0,
+        "V2": 1.0
+      }
+    }
+  }
+}
