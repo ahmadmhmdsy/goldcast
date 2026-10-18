@@ -350,3 +350,47 @@ def selective_direction(cfg: Config, freqs) -> dict:
         s["p_holm"] = ph
         s["passes"] = bool(ph < cfg.alpha and s["n_sel"] >= 30)
     return out
+
+
+def long_horizons(cfg: Config, horizons=(3, 6, 12)) -> dict:
+    """R-011: ridge on valuation features vs drift for h-month gold returns, month-end origins."""
+    from sklearn.linear_model import Ridge
+    from sklearn.preprocessing import StandardScaler
+
+    raw = load_raw_cached(cfg)
+    me = lambda s: s.sort_index().shift(1).resample("ME").last()  # 1-bday lag, then month-end
+    lg = np.log(raw["gold"].sort_index().resample("ME").last())
+    lgl = np.log(me(raw["gold"]))
+    X = pd.DataFrame({"real10": me(raw["real10"]),
+                      "d_real10": me(raw["real10"]).diff(12),
+                      "d_dxy": np.log(me(raw["dxy"])).diff(12),
+                      "gold_dev": lgl - lgl.rolling(60).mean()})
+    out, fam = {}, {}
+    for h in horizons:
+        y = lg.shift(-h) - lg
+        D = X.assign(y=y).loc["2003-01":]
+        rows = D.index[(D.index >= pd.Timestamp(cfg.test_start)) & D["y"].notna()]
+        pr, dr = [], []
+        for t in rows:
+            i = D.index.get_loc(t)
+            tr = D.iloc[: i - h + 1].dropna()
+            if not len(tr) or D.loc[t, X.columns].isna().any():
+                pr.append(np.nan); dr.append(np.nan); continue
+            sc = StandardScaler().fit(tr[X.columns])
+            m = Ridge(alpha=1.0).fit(sc.transform(tr[X.columns]), tr["y"])
+            pr.append(float(m.predict(sc.transform(D.loc[[t], X.columns]))[0]))
+            dr.append(float(tr["y"].mean()))
+        r = pd.DataFrame({"ridge": pr, "drift": dr, "y": D.loc[rows, "y"]}, index=rows).dropna()
+        se = {k: (r[k] - r["y"]) ** 2 for k in ("ridge", "drift")}
+        se["rw"] = r["y"] ** 2
+        reg = r.index >= pd.Timestamp(cfg.regime_start)
+        fam[h] = M.diebold_mariano(se["drift"].values, se["ridge"].values, h=h)[1]
+        out[str(h)] = {"n": len(r), "mse_ratio_vs_drift": float(se["ridge"].mean() / se["drift"].mean()),
+                       "mse_ratio_vs_rw": float(se["ridge"].mean() / se["rw"].mean()),
+                       "mse_ratio_regime": float(se["ridge"][reg].mean() / se["drift"][reg].mean()),
+                       "hit_ridge": float((np.sign(r["ridge"]) == np.sign(r["y"])).mean()),
+                       "hit_up": float((r["y"] > 0).mean()), "p": fam[h]}
+    for h, p in M.holm(fam).items():
+        out[str(h)]["p_holm"] = p
+        out[str(h)]["passes"] = bool(p < cfg.alpha)
+    return out
