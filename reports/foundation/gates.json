@@ -1,0 +1,172 @@
+{
+  "verdict": "refuted",
+  "useful": [],
+  "gates": {
+    "weekly:tabpfn:point_vs_lgbm": false,
+    "weekly:tabpfn:point_vs_rw": false,
+    "weekly:tabpfn:quantile_vs_lgbm_q": false,
+    "weekly:tabpfn:quantile_vs_garch": false,
+    "weekly:chronos2x:point_vs_lgbm": false,
+    "weekly:chronos2x:point_vs_rw": false,
+    "weekly:chronos2x:quantile_vs_lgbm_q": false,
+    "weekly:chronos2x:quantile_vs_garch": false,
+    "monthly:tabpfn:point_vs_lgbm": false,
+    "monthly:tabpfn:point_vs_rw": false,
+    "monthly:tabpfn:quantile_vs_lgbm_q": false,
+    "monthly:tabpfn:quantile_vs_garch": false,
+    "monthly:tabfm:point_vs_lgbm": false,
+    "monthly:tabfm:point_vs_rw": false,
+    "monthly:chronos2x:point_vs_lgbm": false,
+    "monthly:chronos2x:point_vs_rw": false,
+    "monthly:chronos2x:quantile_vs_lgbm_q": false,
+    "monthly:chronos2x:quantile_vs_garch": false
+  },
+  "holm_family_size": 18,
+  "scores": {
+    "weekly": {
+      "n_test": 615,
+      "test_first": "2015-01-02",
+      "test_last": "2026-10-09",
+      "n_regime": 197,
+      "hit_always_up": 0.5528455284552846,
+      "refs": {
+        "rw": {
+          "loss": 0.00048762239783662275,
+          "loss_regime": 0.0006504516649499282
+        },
+        "lgbm": {
+          "loss": 0.000501117964430259,
+          "loss_regime": 0.000637770494094652
+        },
+        "lgbm_q": {
+          "loss": 0.005420823933161466,
+          "loss_regime": 0.006230334192618878
+        },
+        "garch": {
+          "loss": 0.005330444718289021,
+          "loss_regime": 0.006181458964739603
+        }
+      },
+      "arms": {
+        "tabpfn": {
+          "mse": 0.0004898036992536338,
+          "mse_ratio_vs_rw": 1.0044733413122295,
+          "mse_ratio_vs_rw_regime": 0.9664464654228587,
+          "mse_ratio_vs_lgbm": 0.9774219525546467,
+          "hit": 0.5203252032520326,
+          "p_point_vs_lgbm": 0.13235747943089493,
+          "p_point_vs_rw": 0.6240151469304503,
+          "pinball": 0.005330792860179825,
+          "pinball_regime": 0.00613053603717189,
+          "pinball_ratio_vs_garch": 1.000065311978494,
+          "pinball_ratio_vs_lgbm_q": 0.983391625684265,
+          "coverage": 0.8276422764227642,
+          "p_quantile_vs_lgbm_q": 0.008582772947609023,
+          "p_quantile_vs_garch": 0.5043652889463488,
+          "p_holm_point_vs_lgbm": 1.0,
+          "p_holm_point_vs_rw": 1.0,
+          "p_holm_quantile_vs_lgbm_q": 0.1544899130569624,
+          "p_holm_quantile_vs_garch": 1.0
+        },
+        "chronos2x": {
+          "mse": 0.0004949482888239067,
+          "mse_ratio_vs_rw": 1.0150236966550057,
+          "mse_ratio_vs_rw_regime": 0.9726611309478362,
+          "mse_ratio_vs_lgbm": 0.9876881771473373,
+          "hit": 0.5252032520325203,
+          "p_point_vs_lgbm": 0.3156756529002552,
+          "p_point_vs_rw": 0.8638226876290794,
+          "pinball": 0.005393861323567307,
+          "pinball_regime": 0.006204166887454667,
+          "pinball_ratio_vs_garch": 1.0118970571180863,
+          "pinball_ratio_vs_lgbm_q": 0.9950261049009143,
+          "coverage": 0.8048780487804879,
+          "p_quantile_vs_lgbm_q": 0.2919597628886643,
+          "p_quantile_vs_garch": 0.9181918078761566,
+          "p_holm_point_vs_lgbm": 1.0,
+          "p_holm_point_vs_rw": 1.0,
+          "p_holm_quantile_vs_lgbm_q": 1.0,
+          "p_holm_quantile_vs_garch": 1.0
+        }
+      }
+    },
+    "monthly": {
+      "n_test": 140,
+      "test_first": "2015-01-30",
+      "test_last": "2026-08-31",
+      "n_regime": 44,
+      "hit_always_up": 0.5571428571428572,
+      "refs": {
+        "rw": {
+          "loss": 0.0019349159741468946,
+          "loss_regime": 0.0029362808133542753
+        },
+        "lgbm": {
+          "loss": 0.0021019174371213734,
+          "loss_regime": 0.002861256114363284
+        },
+        "lgbm_q": {
+          "loss": 0.011247775291544675,
+          "loss_regime": 0.013676918285628363
+        },
+        "garch": {
+          "loss": 0.01072330851779357,
+          "loss_regime": 0.012804259465074115
+        }
+      },
+      "arms": {
+        "tabpfn": {
+          "mse": 0.0019528353403608517,
+          "mse_ratio_vs_rw": 1.0092610565282338,
+          "mse_ratio_vs_rw_regime": 0.9532247146804039,
+          "mse_ratio_vs_lgbm": 0.9290732860731707,
+          "hit": 0.5428571428571428,
+          "p_point_vs_lgbm": 0.05675107886472296,
+          "p_point_vs_rw": 0.5985075626840672,
+          "pinball": 0.010918899877262255,
+          "pinball_regime": 0.012700818812000957,
+          "pinball_ratio_vs_garch": 1.0182398332701268,
+          "pinball_ratio_vs_lgbm_q": 0.9707608477447406,
+          "coverage": 0.7928571428571428,
+          "p_quantile_vs_lgbm_q": 0.10847060034801224,
+          "p_quantile_vs_garch": 0.9242505650630127,
+          "p_holm_point_vs_lgbm": 0.9647683407002904,
+          "p_holm_point_vs_rw": 1.0,
+          "p_holm_quantile_vs_lgbm_q": 1.0,
+          "p_holm_quantile_vs_garch": 1.0
+        },
+        "tabfm": {
+          "mse": 0.00200842394173978,
+          "mse_ratio_vs_rw": 1.0379902634404035,
+          "mse_ratio_vs_rw_regime": 0.9726025620246669,
+          "mse_ratio_vs_lgbm": 0.9555199011481464,
+          "hit": 0.4785714285714286,
+          "p_point_vs_lgbm": 0.11092482209811302,
+          "p_point_vs_rw": 0.8274867383813371,
+          "p_holm_point_vs_lgbm": 1.0,
+          "p_holm_point_vs_rw": 1.0
+        },
+        "chronos2x": {
+          "mse": 0.0021285765407917864,
+          "mse_ratio_vs_rw": 1.1000873263916677,
+          "mse_ratio_vs_rw_regime": 1.1064941428469959,
+          "mse_ratio_vs_lgbm": 1.0126832306538753,
+          "hit": 0.5928571428571429,
+          "p_point_vs_lgbm": 0.5651732958120492,
+          "p_point_vs_rw": 0.8912113161313049,
+          "pinball": 0.011257392357754905,
+          "pinball_regime": 0.013532204036096084,
+          "pinball_ratio_vs_garch": 1.0498058821188545,
+          "pinball_ratio_vs_lgbm_q": 1.0008550194114796,
+          "coverage": 0.8214285714285714,
+          "p_quantile_vs_lgbm_q": 0.5092311556604641,
+          "p_quantile_vs_garch": 0.9650069348545341,
+          "p_holm_point_vs_lgbm": 1.0,
+          "p_holm_point_vs_rw": 1.0,
+          "p_holm_quantile_vs_lgbm_q": 1.0,
+          "p_holm_quantile_vs_garch": 1.0
+        }
+      }
+    }
+  }
+}

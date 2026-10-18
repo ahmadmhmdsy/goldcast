@@ -1,0 +1,37 @@
+F..                                                                      [100%]
+================================== FAILURES ===================================
+_________________ test_tabular_arm_ignores_the_future[tabpfn] _________________
+
+arm = 'tabpfn'
+
+    @pytest.mark.parametrize("arm", ["tabpfn", "tabfm"])
+    def test_tabular_arm_ignores_the_future(arm):
+        X, y = _panel()
+        origin = X.index[70]
+        fac = (lambda: fm.TabPFNArm([0.1, 0.5, 0.9])) if arm == "tabpfn" else fm.TabFMArm
+        a = walk_forward(fac, X.loc[:origin], y.loc[:origin], str(origin.date()), refit_every=4)
+        Xp, yp = _poison(X, y, origin)
+        b = walk_forward(fac, Xp, yp, str(origin.date()), refit_every=4)
+>       np.testing.assert_allclose(np.asarray(b.loc[origin], float), np.asarray(a.loc[origin], float), rtol=1e-5)
+E       AssertionError: 
+E       Not equal to tolerance rtol=1e-05, atol=0
+E       
+E       Mismatched elements: 2 / 4 (50%)
+E       Mismatch at indices:
+E        [0]: 0.00010605054175822639 (ACTUAL), 0.00010604090206890184 (DESIRED)
+E        [2]: -0.0004563908550552209 (ACTUAL), -0.000456399088956519 (DESIRED)
+E       Max absolute difference among violations: 9.63968932e-09
+E       Max relative difference among violations: 9.09053878e-05
+E        ACTUAL: array([ 0.000106, -0.022029, -0.000456,  0.023075])
+E        DESIRED: array([ 0.000106, -0.022029, -0.000456,  0.023075])
+
+tests\test_fm_leakage.py:44: AssertionError
+============================== slowest durations ==============================
+20.59s call     tests/test_fm_leakage.py::test_chronos2x_ignores_the_future
+16.53s call     tests/test_fm_leakage.py::test_tabular_arm_ignores_the_future[tabpfn]
+0.01s call     tests/test_fm_leakage.py::test_chronos2x_covariates_cover_the_target_period
+
+(6 durations < 0.005s hidden.  Use -vv to show these durations.)
+=========================== short test summary info ===========================
+FAILED tests/test_fm_leakage.py::test_tabular_arm_ignores_the_future[tabpfn]
+1 failed, 2 passed, 1 deselected in 41.48s

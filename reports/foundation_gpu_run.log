@@ -1,0 +1,15 @@
+.                                                                        [100%]
+============================== warnings summary ===============================
+tests\test_fm_leakage.py:15
+  E:\python_projects\gold_forecasting\tests\test_fm_leakage.py:15: PytestUnknownMarkWarning: Unknown pytest.mark.slow - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    pytestmark = pytest.mark.slow
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 3 deselected, 1 warning in 201.48s (0:03:21)
+  weekly tabpfn: 615 origins, 5495s
+
+Fetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]
+Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 999.95it/s]
+Loading weights from local directory
+  monthly tabfm: 140 origins, 6586s
+DONE 0

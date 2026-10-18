@@ -1,0 +1,89 @@
+Loading weights:   0%|          | 0/170 [00:00<?, ?it/s]Loading weights:  11%|#1        | 19/170 [00:00<00:00, 189.66it/s]Loading weights:  22%|##2       | 38/170 [00:00<00:00, 161.85it/s]Loading weights:  32%|###2      | 55/170 [00:00<00:00, 163.36it/s]Loading weights:  42%|####2     | 72/170 [00:00<00:00, 164.51it/s]Loading weights: 100%|##########| 170/170 [00:00<00:00, 382.31it/s]
+  weekly chronos2x: 20 origins, 29s
+Loading weights:   0%|          | 0/170 [00:00<?, ?it/s]Loading weights:   9%|8         | 15/170 [00:00<00:01, 131.75it/s]Loading weights:  19%|#8        | 32/170 [00:00<00:01, 133.86it/s]Loading weights:  27%|##7       | 46/170 [00:00<00:00, 132.10it/s]Loading weights:  36%|###6      | 62/170 [00:00<00:00, 141.09it/s]Loading weights: 100%|##########| 170/170 [00:00<00:00, 363.74it/s]
+  monthly chronos2x: 20 origins, 5s
+  weekly tabpfn: 20 origins, 857s
+  monthly tabpfn: 20 origins, 244s
+Fetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|##########| 2/2 [00:00<00:00, 623.78it/s]
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "E:\python_projects\gold_forecasting\src\goldcast\__main__.py", line 3, in <module>
+    main()
+  File "E:\python_projects\gold_forecasting\src\goldcast\cli.py", line 301, in main
+    {"fetch": cmd_fetch, "build": cmd_build, "backtest": cmd_backtest,
+  File "E:\python_projects\gold_forecasting\src\goldcast\cli.py", line 247, in cmd_foundation
+    p, secs = fm.timed(fm.run_arm, cfg, raw, f, arm, args.limit, args.threads)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\python_projects\gold_forecasting\src\goldcast\fm.py", line 200, in timed
+    return fn(*a, **k), time.time() - t
+           ^^^^^^^^^^^
+  File "E:\python_projects\gold_forecasting\src\goldcast\fm.py", line 104, in run_arm
+    p = walk_forward(TabFMArm, X, y, cfg.test_start, fs.refit_every)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\python_projects\gold_forecasting\src\goldcast\evaluation\walkforward.py", line 32, in walk_forward
+    model = model_factory().fit(X.iloc[tr][ok], ytr[ok])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\python_projects\gold_forecasting\src\goldcast\fm.py", line 58, in fit
+    self.m = TabFMRegressor(model=_TABFM["m"]).fit(X.values, y.values)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\python_projects\gold_forecasting\.venv\Lib\site-packages\tabfm\src\classifier_and_regressor.py", line 3600, in fit
+    self.ensemble_generator_.fit(X, y)
+  File "E:\python_projects\gold_forecasting\.venv\Lib\site-packages\tabfm\src\classifier_and_regressor.py", line 1213, in fit
+    validate_data(self, X, y)
+  File "E:\python_projects\gold_forecasting\.venv\Lib\site-packages\sklearn\utils\validation.py", line 3058, in validate_data
+    X, y = check_X_y(X, y, **check_params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\python_projects\gold_forecasting\.venv\Lib\site-packages\sklearn\utils\validation.py", line 1330, in check_X_y
+    X = check_array(
+        ^^^^^^^^^^^^
+  File "E:\python_projects\gold_forecasting\.venv\Lib\site-packages\sklearn\utils\validation.py", line 1090, in check_array
+    _assert_all_finite(
+  File "E:\python_projects\gold_forecasting\.venv\Lib\site-packages\sklearn\utils\validation.py", line 137, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "E:\python_projects\gold_forecasting\.venv\Lib\site-packages\sklearn\utils\validation.py", line 186, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input X contains NaN.
+EnsembleGenerator does not accept missing values encoded as NaN natively. For supervised learning, you might want to consider sklearn.ensemble.HistGradientBoostingClassifier and Regressor which accept missing values encoded as NaNs natively. Alternatively, it is possible to preprocess the data, for instance by using an imputer transformer in a pipeline or drop samples with missing values. See https://scikit-learn.org/stable/modules/impute.html You can find a list of all estimators that handle NaN values at the following page: https://scikit-learn.org/stable/modules/impute.html#estimators-that-handle-nan-values
+Loading weights from local directory
+
+# R-005 foundation arms - verdict: **refuted** (Holm family 16)
+
+## weekly (20 origins, 2015-01-02..2015-05-15; 0 in 2023+)
+RW mse 0.000478; lgbm mse 0.000573; lgbm_q pinball 0.005827; GARCH pinball 0.005551; always-up hit 0.500
+
+| arm | mse/rw | mse/rw 2023+ | mse/lgbm | p_holm vs lgbm | p_holm vs rw | pinball | pin/garch | pin/lgbm_q | cov | p_holm vs lgbm_q | p_holm vs garch | hit |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| tabpfn | 1.0166 | - | 0.8478 | 1.0000 | 1.0000 | 0.005533 | 0.9967 | 0.9495 | 0.750 | 0.7999 | 1.0000 | 0.550 |
+| chronos2x | 1.0502 | - | 0.8758 | 1.0000 | 1.0000 | 0.005626 | 1.0135 | 0.9655 | 0.750 | 1.0000 | 1.0000 | 0.650 |
+
+## monthly (20 origins, 2015-01-30..2016-08-31; 0 in 2023+)
+RW mse 0.002058; lgbm mse 0.003087; lgbm_q pinball 0.013596; GARCH pinball 0.011720; always-up hit 0.500
+
+| arm | mse/rw | mse/rw 2023+ | mse/lgbm | p_holm vs lgbm | p_holm vs rw | pinball | pin/garch | pin/lgbm_q | cov | p_holm vs lgbm_q | p_holm vs garch | hit |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| tabpfn | 1.1197 | - | 0.7465 | 0.4975 | 1.0000 | 0.012272 | 1.0470 | 0.9026 | 0.750 | 1.0000 | 1.0000 | 0.350 |
+| chronos2x | 1.0572 | - | 0.7048 | 0.4975 | 1.0000 | 0.011695 | 0.9978 | 0.8602 | 0.850 | 1.0000 | 1.0000 | 0.550 |
+
+## Gates
+
+- weekly:tabpfn:point_vs_lgbm: False
+- weekly:tabpfn:point_vs_rw: False
+- weekly:tabpfn:quantile_vs_lgbm_q: False
+- weekly:tabpfn:quantile_vs_garch: False
+- weekly:chronos2x:point_vs_lgbm: False
+- weekly:chronos2x:point_vs_rw: False
+- weekly:chronos2x:quantile_vs_lgbm_q: False
+- weekly:chronos2x:quantile_vs_garch: False
+- monthly:tabpfn:point_vs_lgbm: False
+- monthly:tabpfn:point_vs_rw: False
+- monthly:tabpfn:quantile_vs_lgbm_q: False
+- monthly:tabpfn:quantile_vs_garch: False
+- monthly:chronos2x:point_vs_lgbm: False
+- monthly:chronos2x:point_vs_rw: False
+- monthly:chronos2x:quantile_vs_lgbm_q: False
+- monthly:chronos2x:quantile_vs_garch: False
+
+Useful: none
+
+elapsed 16s

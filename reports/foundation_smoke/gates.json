@@ -1,0 +1,159 @@
+{
+  "verdict": "refuted",
+  "useful": [],
+  "gates": {
+    "weekly:tabpfn:point_vs_lgbm": false,
+    "weekly:tabpfn:point_vs_rw": false,
+    "weekly:tabpfn:quantile_vs_lgbm_q": false,
+    "weekly:tabpfn:quantile_vs_garch": false,
+    "weekly:chronos2x:point_vs_lgbm": false,
+    "weekly:chronos2x:point_vs_rw": false,
+    "weekly:chronos2x:quantile_vs_lgbm_q": false,
+    "weekly:chronos2x:quantile_vs_garch": false,
+    "monthly:tabpfn:point_vs_lgbm": false,
+    "monthly:tabpfn:point_vs_rw": false,
+    "monthly:tabpfn:quantile_vs_lgbm_q": false,
+    "monthly:tabpfn:quantile_vs_garch": false,
+    "monthly:chronos2x:point_vs_lgbm": false,
+    "monthly:chronos2x:point_vs_rw": false,
+    "monthly:chronos2x:quantile_vs_lgbm_q": false,
+    "monthly:chronos2x:quantile_vs_garch": false
+  },
+  "holm_family_size": 16,
+  "scores": {
+    "weekly": {
+      "n_test": 20,
+      "test_first": "2015-01-02",
+      "test_last": "2015-05-15",
+      "n_regime": 0,
+      "hit_always_up": 0.5,
+      "refs": {
+        "rw": {
+          "loss": 0.0004779671521970946,
+          "loss_regime": NaN
+        },
+        "lgbm": {
+          "loss": 0.0005731349748296492,
+          "loss_regime": NaN
+        },
+        "lgbm_q": {
+          "loss": 0.005827378700952161,
+          "loss_regime": NaN
+        },
+        "garch": {
+          "loss": 0.0055514257665189295,
+          "loss_regime": NaN
+        }
+      },
+      "arms": {
+        "tabpfn": {
+          "mse": 0.0004858976795822513,
+          "mse_ratio_vs_rw": 1.0165922016789273,
+          "mse_ratio_vs_rw_regime": NaN,
+          "mse_ratio_vs_lgbm": 0.847789265917113,
+          "hit": 0.55,
+          "p_point_vs_lgbm": 0.11570255762624912,
+          "p_point_vs_rw": 0.615189176028763,
+          "pinball": 0.005532907778412101,
+          "pinball_regime": NaN,
+          "pinball_ratio_vs_garch": 0.9966642824950463,
+          "pinball_ratio_vs_lgbm_q": 0.9494676873339388,
+          "coverage": 0.75,
+          "p_quantile_vs_lgbm_q": 0.05713769690629541,
+          "p_quantile_vs_garch": 0.44758077457686285,
+          "p_holm_point_vs_lgbm": 1.0,
+          "p_holm_point_vs_rw": 1.0,
+          "p_holm_quantile_vs_lgbm_q": 0.7999277566881358,
+          "p_holm_quantile_vs_garch": 1.0
+        },
+        "chronos2x": {
+          "mse": 0.0005019397863818693,
+          "mse_ratio_vs_rw": 1.0501554010031413,
+          "mse_ratio_vs_rw_regime": NaN,
+          "mse_ratio_vs_lgbm": 0.8757793686052034,
+          "hit": 0.65,
+          "p_point_vs_lgbm": 0.2236428211760527,
+          "p_point_vs_rw": 0.6893479201355306,
+          "pinball": 0.005626208278869668,
+          "pinball_regime": NaN,
+          "pinball_ratio_vs_garch": 1.013470865953348,
+          "pinball_ratio_vs_lgbm_q": 0.9654784024848733,
+          "coverage": 0.75,
+          "p_quantile_vs_lgbm_q": 0.31847693152587825,
+          "p_quantile_vs_garch": 0.5885411488284851,
+          "p_holm_point_vs_lgbm": 1.0,
+          "p_holm_point_vs_rw": 1.0,
+          "p_holm_quantile_vs_lgbm_q": 1.0,
+          "p_holm_quantile_vs_garch": 1.0
+        }
+      }
+    },
+    "monthly": {
+      "n_test": 20,
+      "test_first": "2015-01-30",
+      "test_last": "2016-08-31",
+      "n_regime": 0,
+      "hit_always_up": 0.5,
+      "refs": {
+        "rw": {
+          "loss": 0.002058161018691552,
+          "loss_regime": NaN
+        },
+        "lgbm": {
+          "loss": 0.0030873193153913244,
+          "loss_regime": NaN
+        },
+        "lgbm_q": {
+          "loss": 0.013595578300848477,
+          "loss_regime": NaN
+        },
+        "garch": {
+          "loss": 0.011720483265045422,
+          "loss_regime": NaN
+        }
+      },
+      "arms": {
+        "tabpfn": {
+          "mse": 0.0023046124437949246,
+          "mse_ratio_vs_rw": 1.1197435102818392,
+          "mse_ratio_vs_rw_regime": NaN,
+          "mse_ratio_vs_lgbm": 0.7464768649960039,
+          "hit": 0.35,
+          "p_point_vs_lgbm": 0.032258576085723904,
+          "p_point_vs_rw": 0.9717917971287225,
+          "pinball": 0.012271867457073204,
+          "pinball_regime": NaN,
+          "pinball_ratio_vs_garch": 1.0470444929239568,
+          "pinball_ratio_vs_lgbm_q": 0.9026366650624444,
+          "coverage": 0.75,
+          "p_quantile_vs_lgbm_q": 0.08521553590300025,
+          "p_quantile_vs_garch": 0.9498733611250386,
+          "p_holm_point_vs_lgbm": 0.49750178826831126,
+          "p_holm_point_vs_rw": 1.0,
+          "p_holm_quantile_vs_lgbm_q": 1.0,
+          "p_holm_quantile_vs_garch": 1.0
+        },
+        "chronos2x": {
+          "mse": 0.002175934635491701,
+          "mse_ratio_vs_rw": 1.0572227419189106,
+          "mse_ratio_vs_rw_regime": NaN,
+          "mse_ratio_vs_lgbm": 0.7047974029262005,
+          "hit": 0.55,
+          "p_point_vs_lgbm": 0.031093861766769454,
+          "p_point_vs_rw": 0.7114479462596777,
+          "pinball": 0.011694508454724105,
+          "pinball_regime": NaN,
+          "pinball_ratio_vs_garch": 0.9977838106386976,
+          "pinball_ratio_vs_lgbm_q": 0.8601699902676645,
+          "coverage": 0.85,
+          "p_quantile_vs_lgbm_q": 0.1071730538940124,
+          "p_quantile_vs_garch": 0.48654986064538447,
+          "p_holm_point_vs_lgbm": 0.49750178826831126,
+          "p_holm_point_vs_rw": 1.0,
+          "p_holm_quantile_vs_lgbm_q": 1.0,
+          "p_holm_quantile_vs_garch": 1.0
+        }
+      }
+    }
+  }
+}

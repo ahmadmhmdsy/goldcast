@@ -1,0 +1,12 @@
+  weekly tabpfn: 20 origins, 34s
+
+Fetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]
+Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 654.90it/s]
+Loading weights from local directory
+  weekly tabfm: 20 origins, 456s
+
+Fetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]
+Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 761.15it/s]
+Loading weights from local directory
+  monthly tabfm: 20 origins, 569s
+DONE 0

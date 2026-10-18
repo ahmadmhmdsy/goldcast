@@ -231,6 +231,42 @@ def cmd_blocks(cfg, args):
     print(f"elapsed {time.time() - t0:.0f}s")
 
 
+def cmd_foundation(cfg, args):
+    """R-005: TabPFN-2, TabFM and Chronos-2 with covariates vs lgbm, RW and GARCH; arms cached per freq."""
+    from goldcast import fm
+
+    t0, raw = time.time(), load_raw(cfg)
+    d = REPORTS / ("foundation_smoke" if args.limit else "foundation")
+    d.mkdir(parents=True, exist_ok=True)
+    freqs = _freqs(cfg, args.freq)
+    for f in freqs:
+        for arm in args.arms:
+            path = d / f"{f}_{arm}.csv"
+            if path.exists() and not args.force:
+                continue
+            p, secs = fm.timed(fm.run_arm, cfg, raw, f, arm, args.limit, args.threads)
+            p.to_csv(path)
+            print(f"  {f} {arm}: {len(p)} origins, {secs:.0f}s", flush=True)
+            with open(d / "runtime.log", "a", encoding="utf-8") as fh:
+                fh.write(f"{f}\t{arm}\t{len(p)}\t{secs:.1f}\n")
+    if args.no_score:
+        return
+    cached = {}
+    for f in freqs:
+        for arm in fm.ARMS:
+            path = d / f"{f}_{arm}.csv"
+            if path.exists():
+                c = pd.read_csv(path, index_col=0, parse_dates=True)
+                c.columns = [c.columns[0], *[float(x) for x in c.columns[1:]]]
+                cached[(f, arm)] = c
+    out = fm.score(cfg, raw, freqs, cached, args.limit)
+    md = fm.to_markdown(out)
+    (d / "report.md").write_text(md, encoding="utf-8")
+    (d / "gates.json").write_text(json.dumps(out, indent=2, default=_json_default))
+    print("\n" + md)
+    print(f"elapsed {time.time() - t0:.0f}s")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="goldcast")
     ap.add_argument("--config", default=None)
@@ -253,11 +289,18 @@ def main(argv=None):
     p.add_argument("--freq", default="all", choices=["weekly", "monthly", "all"])
     p.add_argument("--limit", type=int, default=None, help="smoke run: first N test rows only")
     p.add_argument("--jobs", type=int, default=8)
+    p = sub.add_parser("foundation")
+    p.add_argument("--freq", default="all", choices=["weekly", "monthly", "all"])
+    p.add_argument("--arms", nargs="*", default=["chronos2x", "tabpfn", "tabfm"])
+    p.add_argument("--limit", type=int, default=None, help="smoke run: first N test rows only")
+    p.add_argument("--threads", type=int, default=10)
+    p.add_argument("--force", action="store_true", help="rerun arms that are already cached")
+    p.add_argument("--no-score", action="store_true")
     args = ap.parse_args(argv)
     cfg = load_config(args.config) if args.config else load_config()
     {"fetch": cmd_fetch, "build": cmd_build, "backtest": cmd_backtest,
      "forecast": cmd_forecast, "chronos": cmd_chronos, "intervals": cmd_intervals,
-     "blocks": cmd_blocks}[args.cmd](cfg, args)
+     "blocks": cmd_blocks, "foundation": cmd_foundation}[args.cmd](cfg, args)
 
 
 if __name__ == "__main__":

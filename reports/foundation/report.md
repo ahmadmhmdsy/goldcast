@@ -1,0 +1,41 @@
+# R-005 foundation arms - verdict: **refuted** (Holm family 18)
+
+## weekly (615 origins, 2015-01-02..2026-10-09; 197 in 2023+)
+RW mse 0.000488; lgbm mse 0.000501; lgbm_q pinball 0.005421; GARCH pinball 0.005330; always-up hit 0.553
+
+| arm | mse/rw | mse/rw 2023+ | mse/lgbm | p_holm vs lgbm | p_holm vs rw | pinball | pin/garch | pin/lgbm_q | cov | p_holm vs lgbm_q | p_holm vs garch | hit |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| tabpfn | 1.0045 | 0.9664 | 0.9774 | 1.0000 | 1.0000 | 0.005331 | 1.0001 | 0.9834 | 0.828 | 0.1545 | 1.0000 | 0.520 |
+| chronos2x | 1.0150 | 0.9727 | 0.9877 | 1.0000 | 1.0000 | 0.005394 | 1.0119 | 0.9950 | 0.805 | 1.0000 | 1.0000 | 0.525 |
+
+## monthly (140 origins, 2015-01-30..2026-08-31; 44 in 2023+)
+RW mse 0.001935; lgbm mse 0.002102; lgbm_q pinball 0.011248; GARCH pinball 0.010723; always-up hit 0.557
+
+| arm | mse/rw | mse/rw 2023+ | mse/lgbm | p_holm vs lgbm | p_holm vs rw | pinball | pin/garch | pin/lgbm_q | cov | p_holm vs lgbm_q | p_holm vs garch | hit |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| tabpfn | 1.0093 | 0.9532 | 0.9291 | 0.9648 | 1.0000 | 0.010919 | 1.0182 | 0.9708 | 0.793 | 1.0000 | 1.0000 | 0.543 |
+| tabfm | 1.0380 | 0.9726 | 0.9555 | 1.0000 | 1.0000 | - | - | - | - | - | - | 0.479 |
+| chronos2x | 1.1001 | 1.1065 | 1.0127 | 1.0000 | 1.0000 | 0.011257 | 1.0498 | 1.0009 | 0.821 | 1.0000 | 1.0000 | 0.593 |
+
+## Gates
+
+- weekly:tabpfn:point_vs_lgbm: False
+- weekly:tabpfn:point_vs_rw: False
+- weekly:tabpfn:quantile_vs_lgbm_q: False
+- weekly:tabpfn:quantile_vs_garch: False
+- weekly:chronos2x:point_vs_lgbm: False
+- weekly:chronos2x:point_vs_rw: False
+- weekly:chronos2x:quantile_vs_lgbm_q: False
+- weekly:chronos2x:quantile_vs_garch: False
+- monthly:tabpfn:point_vs_lgbm: False
+- monthly:tabpfn:point_vs_rw: False
+- monthly:tabpfn:quantile_vs_lgbm_q: False
+- monthly:tabpfn:quantile_vs_garch: False
+- monthly:tabfm:point_vs_lgbm: False
+- monthly:tabfm:point_vs_rw: False
+- monthly:chronos2x:point_vs_lgbm: False
+- monthly:chronos2x:point_vs_rw: False
+- monthly:chronos2x:quantile_vs_lgbm_q: False
+- monthly:chronos2x:quantile_vs_garch: False
+
+Useful: none
