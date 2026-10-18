@@ -313,3 +313,40 @@ def tail_risk(cfg: Config, freqs) -> dict:
         t, f = k.split("_")
         out[f][t] = {"p": p, "p_holm": hp[k], "passes": bool(hp[k] < cfg.alpha)}
     return out
+
+
+def selective_direction(cfg: Config, freqs) -> dict:
+    """R-010: hit rate on the most confident origins (expanding 80th pct of |p-0.5|) vs always-up."""
+    from goldcast.config import ROOT
+
+    warm = {"weekly": 52, "monthly": 24}
+    out, fam = {}, {}
+    for f in freqs:
+        d = pd.read_csv(ROOT / "reports" / f / "predictions.csv", index_col=0, parse_dates=True)
+        up = (d["y"] > 0).astype(float)
+        out[f] = {"base_up_rate": float(up.iloc[warm[f]:].mean())}
+        for m in ("logit", "lgbm_clf"):
+            p = d[f"direction:{m}"]
+            conf = (p - 0.5).abs()
+            thr = conf.expanding().quantile(0.8).shift(1)
+            hit = ((p > 0.5).astype(float) == up).astype(float)
+            sl = slice(warm[f], None)
+            sel = (conf >= thr).iloc[sl]
+            h, u = hit.iloc[sl][sel], up.iloc[sl][sel]
+            curve = {}
+            for cov in (0.1, 0.2, 0.5, 1.0):
+                k = conf.iloc[sl] >= conf.iloc[sl].quantile(1 - cov)
+                curve[str(cov)] = float(hit.iloc[sl][k].mean())
+            reg = h.index >= pd.Timestamp(cfg.regime_start)
+            p_ = M.diebold_mariano(1 - u.values, 1 - h.values)[1] if len(h) > 2 else 1.0
+            fam[f"{m}|{f}"] = p_
+            out[f][m] = {"n_sel": int(sel.sum()), "coverage": float(sel.mean()),
+                         "hit": float(h.mean()), "always_up_hit": float(u.mean()),
+                         "hit_regime": float(h[reg].mean()) if reg.any() else None,
+                         "curve_hindsight": curve, "p": p_}
+    for k, ph in M.holm(fam).items():
+        m, f = k.split("|")
+        s = out[f][m]
+        s["p_holm"] = ph
+        s["passes"] = bool(ph < cfg.alpha and s["n_sel"] >= 30)
+    return out
