@@ -277,3 +277,39 @@ def load_raw_cached(cfg):
     from goldcast.data.store import load_raw
 
     return load_raw(cfg)
+
+
+def tail_risk(cfg: Config, freqs) -> dict:
+    """R-009: P(|ret| > 2 sigma_past) from cached R-006 variance forecasts, scored by Brier."""
+    from scipy.stats import norm
+
+    from goldcast.config import ROOT
+
+    warm = {"weekly": 52, "monthly": 24}
+    out, fam = {}, {}
+    for f in freqs:
+        d = pd.read_csv(ROOT / "reports" / "vol" / f"{f}_predictions.csv", index_col=0, parse_dates=True)
+        c = 2 * np.sqrt((d["ret"] ** 2).expanding().mean().shift(1))
+        ev = (d["ret"].abs() > c).astype(float)
+        P = {m: pd.Series(2 * norm.sf(c / np.sqrt(d[m])), index=d.index) for m in ("garch", "gvz", "har")}
+        s = slice(warm[f], None)
+        e = ev.iloc[s]
+        clim = e.expanding().mean().shift(1).fillna(0.05).clip(1e-3, 1 - 1e-3)
+        P = {m: p.iloc[s].clip(1e-4, 1 - 1e-4) for m, p in P.items()}
+        P["clim"] = clim
+        br = {m: (p - e) ** 2 for m, p in P.items()}
+        ll = {m: -(e * np.log(p) + (1 - e) * np.log(1 - p)) for m, p in P.items()}
+        reg = e.index >= pd.Timestamp(cfg.regime_start)
+        fam[f"T1_{f}"] = M.diebold_mariano(br["clim"].values, br["garch"].values)[1]
+        fam[f"T2_{f}"] = M.diebold_mariano(br["garch"].values, br["gvz"].values)[1]
+        out[f] = {"n": len(e), "events": int(e.sum()), "rate": float(e.mean()),
+                  "mean_p": {m: float(p.mean()) for m, p in P.items()},
+                  "brier": {m: float(b.mean()) for m, b in br.items()},
+                  "brier_regime": {m: float(b[reg].mean()) for m, b in br.items()},
+                  "logloss": {m: float(v.mean()) for m, v in ll.items()},
+                  "p_har_vs_garch": M.diebold_mariano(br["garch"].values, br["har"].values)[1]}
+    hp = M.holm(fam)
+    for k, p in fam.items():
+        t, f = k.split("_")
+        out[f][t] = {"p": p, "p_holm": hp[k], "passes": bool(hp[k] < cfg.alpha)}
+    return out
