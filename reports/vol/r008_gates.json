@@ -1,0 +1,28 @@
+{
+  "weekly": {
+    "n": 615,
+    "pinball_ratio": 1.0025268990062257,
+    "pinball_ratio_regime": 1.0151944784844593,
+    "cov_scaled": 0.7804878048780488,
+    "cov_scaled_regime": 0.766497461928934,
+    "qlike_scaled_vs_gvz": 0.9939533211498895,
+    "k_first": 0.757512504663663,
+    "k_last": 0.8256215135094574,
+    "p": 0.6704546090695424,
+    "p_holm": 1.0,
+    "passes": false
+  },
+  "monthly": {
+    "n": 140,
+    "pinball_ratio": 1.0093791803747467,
+    "pinball_ratio_regime": 1.040502682735975,
+    "cov_scaled": 0.7357142857142858,
+    "cov_scaled_regime": 0.6818181818181818,
+    "qlike_scaled_vs_gvz": 1.1056121994788703,
+    "k_first": 0.7450452680523768,
+    "k_last": 0.8242587851536968,
+    "p": 0.6776597114038618,
+    "p_holm": 1.0,
+    "passes": false
+  }
+}

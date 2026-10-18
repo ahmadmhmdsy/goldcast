@@ -231,3 +231,49 @@ def gvz_range(cfg: Config, raw, freqs) -> dict:
         ok = p < cfg.alpha and (gname == "G2" or 0.75 <= s["cov_gvz"] <= 0.85)
         s[gname] = {"p": fam[(f, gname)], "p_holm": p, "passes": bool(ok)}
     return out
+
+
+def scaled_gvz_range(cfg: Config, freqs) -> dict:
+    """R-008: GVZ variance times the expanding realized/implied ratio, vs the cached GARCH range."""
+    from scipy.stats import norm
+
+    from goldcast.config import ROOT
+
+    qs = list(cfg.quantiles)
+    z = norm.ppf(qs)
+    out, fam = {}, {}
+    for f in freqs:
+        fs = cfg.freqs[f]
+        F, y_rv, _ = frame(cfg, load_raw_cached(cfg), fs)
+        imp = (F["gvz_level"] / 100) ** 2 / 252 * F["ndays"]
+        ok = y_rv.notna() & imp.notna()
+        ratio = (y_rv.where(ok).cumsum() / imp.where(ok).cumsum()).ffill().shift(1)  # rows j <= t-1
+        t = pd.read_csv(ROOT / "reports" / "intervals" / f"{f}_predictions.csv", header=[0, 1], index_col=0, skiprows=[2])
+        t.index = pd.to_datetime(t.index)
+        idx = t.index.intersection(F.index[(F.index >= pd.Timestamp(cfg.test_start)) & y_rv.notna().values])
+        g = np.sort(t["garch"].loc[idx].values, axis=1)
+        yv = t["y"].loc[idx].values.ravel()
+        k = ratio.loc[idx].values
+        Fs = k * imp.loc[idx].values
+        q = np.sqrt(Fs)[:, None] * z[None, :]
+        reg = idx >= pd.Timestamp(cfg.regime_start)
+        pb_s, pb_g = M.pinball(yv, q, qs), M.pinball(yv, g, qs)
+        rv = y_rv.loc[idx].values
+        fam[f] = M.diebold_mariano(pb_g, pb_s)[1]
+        out[f] = {"n": len(idx), "pinball_ratio": float(pb_s.mean() / pb_g.mean()),
+                  "pinball_ratio_regime": float(pb_s[reg].mean() / pb_g[reg].mean()),
+                  "cov_scaled": M.coverage(yv, q[:, 0], q[:, 2]),
+                  "cov_scaled_regime": M.coverage(yv[reg], q[reg, 0], q[reg, 2]),
+                  "qlike_scaled_vs_gvz": float(qlike(rv, Fs).mean() / qlike(rv, imp.loc[idx].values).mean()),
+                  "k_first": float(k[0]), "k_last": float(k[-1]), "p": fam[f]}
+    for f, p in M.holm(fam).items():
+        s = out[f]
+        s["p_holm"] = p
+        s["passes"] = bool(p < cfg.alpha and 0.75 <= s["cov_scaled"] <= 0.85)
+    return out
+
+
+def load_raw_cached(cfg):
+    from goldcast.data.store import load_raw
+
+    return load_raw(cfg)

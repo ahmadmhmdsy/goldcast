@@ -288,8 +288,13 @@ def cmd_range(cfg, args):
     """R-007: GVZ-implied range vs GARCH; needs reports/vol and reports/intervals."""
     from goldcast import rv
 
-    out = rv.gvz_range(cfg, load_raw(cfg), _freqs(cfg, args.freq))
-    (REPORTS / "vol" / "r007_gates.json").write_text(json.dumps(out, indent=2, default=_json_default))
+    if args.scaled:
+        out = rv.scaled_gvz_range(cfg, _freqs(cfg, args.freq))
+        name = "r008_gates.json"
+    else:
+        out = rv.gvz_range(cfg, load_raw(cfg), _freqs(cfg, args.freq))
+        name = "r007_gates.json"
+    (REPORTS / "vol" / name).write_text(json.dumps(out, indent=2, default=_json_default))
     print(json.dumps(out, indent=2, default=_json_default))
 
 
@@ -327,6 +332,7 @@ def main(argv=None):
     p.add_argument("--limit", type=int, default=None, help="smoke run: first N test rows only")
     p = sub.add_parser("range")
     p.add_argument("--freq", default="all", choices=["weekly", "monthly", "all"])
+    p.add_argument("--scaled", action="store_true", help="R-008: risk-premium-scaled GVZ")
     args = ap.parse_args(argv)
     cfg = load_config(args.config) if args.config else load_config()
     {"fetch": cmd_fetch, "build": cmd_build, "backtest": cmd_backtest,
