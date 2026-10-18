@@ -1,0 +1,44 @@
+{
+  "weekly": {
+    "n": 615,
+    "train_rows_last": 4529,
+    "mse_pooled_vs_gold": 1.0526237239423084,
+    "mse_pooled_vs_rw": 1.110526447701354,
+    "mse_gold_vs_rw": 1.055007998054791,
+    "mse_pooled_vs_rw_regime": 1.0737147257843267,
+    "hit_pooled": 0.5252032520325203,
+    "hit_gold": 0.5284552845528455,
+    "p_gold_vs_rw": 0.9793360510417262,
+    "P1": {
+      "p": 0.9260618221475369,
+      "p_holm": 1.0,
+      "passes": false
+    },
+    "P2": {
+      "p": 0.9990868243257958,
+      "p_holm": 1.0,
+      "passes": false
+    }
+  },
+  "monthly": {
+    "n": 141,
+    "train_rows_last": 1050,
+    "mse_pooled_vs_gold": 1.3022176258490417,
+    "mse_pooled_vs_rw": 1.3787694614353851,
+    "mse_gold_vs_rw": 1.0587857467652015,
+    "mse_pooled_vs_rw_regime": 1.2776772563962988,
+    "hit_pooled": 0.49645390070921985,
+    "hit_gold": 0.5177304964539007,
+    "p_gold_vs_rw": 0.8775284058513779,
+    "P1": {
+      "p": 0.9996331713239498,
+      "p_holm": 1.0,
+      "passes": false
+    },
+    "P2": {
+      "p": 0.9999454364364305,
+      "p_holm": 1.0,
+      "passes": false
+    }
+  }
+}

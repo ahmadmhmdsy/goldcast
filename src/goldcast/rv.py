@@ -394,3 +394,64 @@ def long_horizons(cfg: Config, horizons=(3, 6, 12)) -> dict:
         out[str(h)]["p_holm"] = p
         out[str(h)]["passes"] = bool(p < cfg.alpha)
     return out
+
+
+def pooled_metals(cfg: Config, freqs) -> dict:
+    """R-012: LightGBM pooled over gold/silver/platinum/palladium vs gold-only, scored on gold."""
+    import lightgbm as lgb
+
+    raw = load_raw_cached(cfg)
+    rule = {"weekly": ("W-FRI", 13), "monthly": ("ME", 3)}
+    metals = ["gold", "silver", "platinum", "palladium"]
+    lag = lambda s: s.sort_index().shift(1)  # noqa: E731
+    out, fam = {}, {}
+    for f in freqs:
+        rs, every = rule[f]
+        last = lambda s: s.resample(rs).last()  # noqa: E731
+        macro = pd.DataFrame({"dxy": np.log(last(lag(raw["dxy"]))).diff(), "real10": last(lag(raw["real10"])).diff(),
+                              "spx": np.log(last(lag(raw["spx"]))).diff(), "vix": last(lag(raw["vix"]))})
+        rows = []
+        for i, m in enumerate(metals):
+            p = raw[m].sort_index()
+            lp = np.log(last(p))
+            r = lp.diff()
+            d = pd.DataFrame({"r1": r, "r4": lp.diff(4), "r12": lp.diff(12),
+                              "rv20": last(np.log(p).diff().rolling(20).std()), "metal": i, "y": r.shift(-1)})
+            rows.append(d.join(macro))
+        P = pd.concat(rows).sort_index(kind="stable").loc["2003-01":].dropna(subset=["r1", "r4", "r12", "rv20", "dxy", "real10", "spx", "vix"])
+        P = P.sort_index(kind="stable")
+        feats = ["r1", "r4", "r12", "rv20", "dxy", "real10", "spx", "vix"]
+        dates = P.index.unique()
+        test = dates[(dates >= pd.Timestamp(cfg.test_start))]
+        prm = dict(n_estimators=200, learning_rate=0.03, num_leaves=15, min_child_samples=50, verbose=-1)
+        pred = {"pooled": {}, "gold": {}}
+        for k in range(0, len(test), every):
+            t0 = test[k]
+            prev = dates[dates < t0]
+            tr = P.loc[: prev[-2]].dropna(subset=["y"]) if len(prev) > 1 else P.iloc[:0]  # purge one period
+            blk = P.loc[t0: test[min(k + every, len(test)) - 1]]
+            blk = blk[blk["metal"] == 0]
+            mp = lgb.LGBMRegressor(**prm).fit(tr[feats + ["metal"]], tr["y"], categorical_feature=["metal"])
+            g = tr[tr["metal"] == 0]
+            mg = lgb.LGBMRegressor(**prm).fit(g[feats], g["y"])
+            for t, a, b in zip(blk.index, mp.predict(blk[feats + ["metal"]]), mg.predict(blk[feats])):
+                pred["pooled"][t], pred["gold"][t] = a, b
+        G = P[P["metal"] == 0].loc[test, "y"].dropna()
+        R = pd.DataFrame({k: pd.Series(v) for k, v in pred.items()}).reindex(G.index).assign(y=G).dropna()
+        se = {k: (R[k] - R["y"]) ** 2 for k in ("pooled", "gold")}
+        se["rw"] = R["y"] ** 2
+        reg = R.index >= pd.Timestamp(cfg.regime_start)
+        fam[f"P1|{f}"] = M.diebold_mariano(se["gold"].values, se["pooled"].values)[1]
+        fam[f"P2|{f}"] = M.diebold_mariano(se["rw"].values, se["pooled"].values)[1]
+        out[f] = {"n": len(R), "train_rows_last": int(len(tr)),
+                  "mse_pooled_vs_gold": float(se["pooled"].mean() / se["gold"].mean()),
+                  "mse_pooled_vs_rw": float(se["pooled"].mean() / se["rw"].mean()),
+                  "mse_gold_vs_rw": float(se["gold"].mean() / se["rw"].mean()),
+                  "mse_pooled_vs_rw_regime": float(se["pooled"][reg].mean() / se["rw"][reg].mean()),
+                  "hit_pooled": float((np.sign(R["pooled"]) == np.sign(R["y"])).mean()),
+                  "hit_gold": float((np.sign(R["gold"]) == np.sign(R["y"])).mean()),
+                  "p_gold_vs_rw": M.diebold_mariano(se["rw"].values, se["gold"].values)[1]}
+    for k, p in M.holm(fam).items():
+        t, f = k.split("|")
+        out[f][t] = {"p": fam[k], "p_holm": p, "passes": bool(p < cfg.alpha)}
+    return out

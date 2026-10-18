@@ -201,3 +201,20 @@ source = "trends"
 id = "gold"                   # worldwide; chained weekly log changes only
 lag_bdays = 7
 kinds = ["logret"]
+
+# R-012 pooled metals: fetched for the pooled study only; block "pool" keeps them out of the base panel.
+[[series]]
+name = "platinum"
+source = "yahoo"
+id = "PL=F"
+lag_bdays = 0
+kinds = ["logret"]
+block = "pool"
+
+[[series]]
+name = "palladium"
+source = "yahoo"
+id = "PA=F"
+lag_bdays = 0
+kinds = ["logret"]
+block = "pool"

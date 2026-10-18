@@ -308,6 +308,14 @@ def cmd_long(cfg, args):
     print(json.dumps(out, indent=2))
 
 
+def cmd_pooled(cfg, args):
+    from goldcast import rv
+
+    out = rv.pooled_metals(cfg, _freqs(cfg, args.freq))
+    (REPORTS / "vol" / "r012_gates.json").write_text(json.dumps(out, indent=2))
+    print(json.dumps(out, indent=2))
+
+
 def cmd_range(cfg, args):
     """R-007: GVZ-implied range vs GARCH; needs reports/vol and reports/intervals."""
     from goldcast import rv
@@ -359,6 +367,8 @@ def main(argv=None):
     p = sub.add_parser("selective")
     p.add_argument("--freq", default="all", choices=["weekly", "monthly", "all"])
     sub.add_parser("long")
+    p = sub.add_parser("pooled")
+    p.add_argument("--freq", default="all", choices=["weekly", "monthly", "all"])
     p = sub.add_parser("range")
     p.add_argument("--freq", default="all", choices=["weekly", "monthly", "all"])
     p.add_argument("--scaled", action="store_true", help="R-008: risk-premium-scaled GVZ")
@@ -366,7 +376,7 @@ def main(argv=None):
     cfg = load_config(args.config) if args.config else load_config()
     {"fetch": cmd_fetch, "build": cmd_build, "backtest": cmd_backtest,
      "forecast": cmd_forecast, "chronos": cmd_chronos, "intervals": cmd_intervals,
-     "blocks": cmd_blocks, "foundation": cmd_foundation, "vol": cmd_vol, "range": cmd_range, "tail": cmd_tail, "selective": cmd_selective, "long": cmd_long}[args.cmd](cfg, args)
+     "blocks": cmd_blocks, "foundation": cmd_foundation, "vol": cmd_vol, "range": cmd_range, "tail": cmd_tail, "selective": cmd_selective, "long": cmd_long, "pooled": cmd_pooled}[args.cmd](cfg, args)
 
 
 if __name__ == "__main__":
