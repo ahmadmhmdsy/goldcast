@@ -172,5 +172,9 @@ def next_period(cfg, freq: str) -> dict:
     qf = {**{m: (lambda f=f: f(cfg, fs)) for m, f in REGISTRY["quantile"].items()},
           "ewma": lambda: EWMAQuantile(cfg.quantiles), "garch": lambda: GARCHQuantile(cfg.quantiles)}
     quant = {m: np.sort(np.ravel(f().fit(X[known], y[known]).predict(last))) for m, f in qf.items()}
+    # R-006/R-007: GVZ implied variance was the best forecast of move size (QLIKE), not of the range
+    ndays = {"weekly": 5, "monthly": 21}.get(freq, 5)
+    gvz = float(last["gvz_level"].iloc[0]) if "gvz_level" in last else np.nan
     return {"origin": last.index[0], "price": float(price.loc[: last.index[0]].iloc[-1]),
-            "data_last": price.index.max(), "point": point, "quant": quant}
+            "data_last": price.index.max(), "point": point, "quant": quant,
+            "gvz": gvz, "gvz_move": gvz / 100 * np.sqrt(ndays / 252)}

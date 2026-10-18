@@ -224,9 +224,14 @@ with tab_next:
         st.markdown(f"Origin **{r['origin'].date()}** (last stored price {r['data_last'].date()}), "
                     f"gold **{p0:,.2f}**. Forecast is for the {freq[:-2]} after the origin.")
         g = r["quant"]["garch"]
-        c = st.columns(3)
+        c = st.columns(4)
         for col, (lab, v) in zip(c, [("GARCH low (10%)", g[0]), ("GARCH median", g[1]), ("GARCH high (90%)", g[2])]):
             col.metric(lab, f"{p0 * np.exp(v):,.0f}", f"{v:+.2%}")
+        mv = r.get("gvz_move", np.nan)
+        if np.isfinite(mv):
+            c[3].metric("GVZ expected move (1σ)", f"±{p0 * mv:,.0f}", f"±{mv:.2%}", delta_color="off",
+                        help=f"GVZ {r['gvz']:.1f} at the origin, scaled to the period. Best size-of-move forecast "
+                             "in R-006/R-007 (QLIKE), but its ranges run wide, so the range above stays GARCH.")
         rows = [{"model": m, "kind": "point", "return": v, "price": p0 * np.exp(v)} for m, v in r["point"].items()]
         rows += [{"model": m, "kind": "80% range", "return": q[1], "price": p0 * np.exp(q[1]),
                   "low": p0 * np.exp(q[0]), "high": p0 * np.exp(q[2])} for m, q in r["quant"].items()]
