@@ -1,0 +1,150 @@
+{
+  "weekly": {
+    "n_test": 615,
+    "test_first": "2015-01-02",
+    "test_last": "2026-10-09",
+    "n_regime": 197,
+    "train_start": "2008-06-06",
+    "models": {
+      "har": {
+        "qlike": 0.4241494320251408,
+        "qlike_regime": 0.3961823447594907,
+        "qlike_ratio_vs_har": 1.0,
+        "mse_logrv": 1.1174931209359815,
+        "coverage": 0.8308943089430895,
+        "coverage_regime": 0.817258883248731
+      },
+      "harx": {
+        "qlike": 1630.98830754816,
+        "qlike_regime": 136.45598708788935,
+        "qlike_ratio_vs_har": 3845.3153167289533,
+        "mse_logrv": 8.714434591854438,
+        "coverage": 0.7089430894308943,
+        "coverage_regime": 0.7817258883248731
+      },
+      "lgbm": {
+        "qlike": 0.4097723208351224,
+        "qlike_regime": 0.3914744996734436,
+        "qlike_ratio_vs_har": 0.9661036651130862,
+        "mse_logrv": 0.8497579228629847,
+        "coverage": 0.7804878048780488,
+        "coverage_regime": 0.7766497461928934
+      },
+      "garch": {
+        "qlike": 0.4149403691125906,
+        "qlike_regime": 0.40869480612114173,
+        "qlike_ratio_vs_har": 0.9782881639883833,
+        "mse_logrv": 1.048593460582348,
+        "coverage": 0.8260162601626017,
+        "coverage_regime": 0.8223350253807107
+      },
+      "gvz": {
+        "qlike": 0.37743599971672115,
+        "qlike_regime": 0.353529460415935,
+        "qlike_ratio_vs_har": 0.8898656256937983,
+        "mse_logrv": 1.0431885559523244,
+        "coverage": 0.8455284552845529,
+        "coverage_regime": 0.8274111675126904
+      }
+    },
+    "tests": {
+      "V1": {
+        "model": "garch",
+        "vs": "har",
+        "p": 0.1657068914230701,
+        "p_holm": 0.4971206742692103,
+        "passes": false
+      },
+      "V2": {
+        "model": "harx",
+        "vs": "har",
+        "p": 0.9999999982596971,
+        "p_holm": 1.0,
+        "passes": false
+      },
+      "V3": {
+        "model": "lgbm",
+        "vs": "harx",
+        "p": 1.7396392197311223e-09,
+        "p_holm": 1.0437835318386734e-08,
+        "passes": true
+      }
+    },
+    "useful_range_engine": [
+      "lgbm"
+    ]
+  },
+  "monthly": {
+    "n_test": 140,
+    "test_first": "2015-01-30",
+    "test_last": "2026-08-31",
+    "n_regime": 44,
+    "train_start": "2008-06-30",
+    "models": {
+      "har": {
+        "qlike": 0.26171572152951544,
+        "qlike_regime": 0.29233935489485185,
+        "qlike_ratio_vs_har": 1.0,
+        "mse_logrv": 0.4723321121830079,
+        "coverage": 0.8285714285714286,
+        "coverage_regime": 0.7272727272727273
+      },
+      "harx": {
+        "qlike": 3265.9390638055343,
+        "qlike_regime": 0.2694401044103146,
+        "qlike_ratio_vs_har": 12478.956345147237,
+        "mse_logrv": 4.502339610988247,
+        "coverage": 0.75,
+        "coverage_regime": 0.7272727272727273
+      },
+      "lgbm": {
+        "qlike": 0.23767271791739789,
+        "qlike_regime": 0.28719236409010523,
+        "qlike_ratio_vs_har": 0.9081331321190574,
+        "mse_logrv": 0.39792389040905557,
+        "coverage": 0.7928571428571428,
+        "coverage_regime": 0.7045454545454546
+      },
+      "garch": {
+        "qlike": 0.19657401630502852,
+        "qlike_regime": 0.2456798266624798,
+        "qlike_ratio_vs_har": 0.7510974700190471,
+        "mse_logrv": 0.367974898018574,
+        "coverage": 0.8214285714285714,
+        "coverage_regime": 0.75
+      },
+      "gvz": {
+        "qlike": 0.16652860154126958,
+        "qlike_regime": 0.19025795632415166,
+        "qlike_ratio_vs_har": 0.6362957508553381,
+        "mse_logrv": 0.32884653825614873,
+        "coverage": 0.85,
+        "coverage_regime": 0.7727272727272727
+      }
+    },
+    "tests": {
+      "V1": {
+        "model": "garch",
+        "vs": "har",
+        "p": 0.03299546325995927,
+        "p_holm": 0.1569822070005713,
+        "passes": false
+      },
+      "V2": {
+        "model": "harx",
+        "vs": "har",
+        "p": 0.9686026490230814,
+        "p_holm": 1.0,
+        "passes": false
+      },
+      "V3": {
+        "model": "lgbm",
+        "vs": "harx",
+        "p": 0.03139644140011426,
+        "p_holm": 0.1569822070005713,
+        "passes": false
+      }
+    },
+    "useful_range_engine": []
+  }
+}

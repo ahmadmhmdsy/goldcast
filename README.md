@@ -77,3 +77,11 @@ Chronos-2's weekly interval edge comes from volatility tracking: GARCH and EWMA 
 - **A source:** add a fetcher to `FETCHERS`.
 - **A model:** add a class with `fit(X, y)` / `predict(X)` and register it in `goldcast/models/__init__.py`.
 - **A changed gate:** gates are frozen in R-002. A change goes in a dated note there, not here.
+
+## Research dashboard
+
+Leaderboard, forecast vs actual, error over time and the input panel, read from the cached
+report CSVs (nothing is refit):
+
+    pip install -e .[dashboard]
+    streamlit run src/goldcast/dashboard/app.py

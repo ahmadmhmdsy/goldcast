@@ -1,4 +1,4 @@
-"""Command line: fetch | build | backtest | forecast | chronos | intervals | blocks."""
+"""Command line: fetch | build | backtest | forecast | chronos | intervals | blocks | foundation | vol."""
 
 from __future__ import annotations
 
@@ -267,6 +267,32 @@ def cmd_foundation(cfg, args):
     print(f"elapsed {time.time() - t0:.0f}s")
 
 
+def cmd_vol(cfg, args):
+    """R-006: next-period realized variance, HAR-RV reference, QLIKE, Holm over V1-V3 x horizons."""
+    from goldcast import rv
+
+    t0 = time.time()
+    scores, preds = rv.run(cfg, load_raw(cfg), _freqs(cfg, args.freq), args.limit)
+    out = REPORTS / ("vol_smoke" if args.limit else "vol")
+    out.mkdir(parents=True, exist_ok=True)
+    for f, p in preds.items():
+        p.to_csv(out / f"{f}_predictions.csv")
+    (out / "scores.json").write_text(json.dumps(scores, indent=2, default=_json_default))
+    md = rv.to_markdown(scores)
+    (out / "report.md").write_text(md, encoding="utf-8")
+    print(md)
+    print(f"elapsed {time.time() - t0:.0f}s")
+
+
+def cmd_range(cfg, args):
+    """R-007: GVZ-implied range vs GARCH; needs reports/vol and reports/intervals."""
+    from goldcast import rv
+
+    out = rv.gvz_range(cfg, load_raw(cfg), _freqs(cfg, args.freq))
+    (REPORTS / "vol" / "r007_gates.json").write_text(json.dumps(out, indent=2, default=_json_default))
+    print(json.dumps(out, indent=2, default=_json_default))
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="goldcast")
     ap.add_argument("--config", default=None)
@@ -296,11 +322,16 @@ def main(argv=None):
     p.add_argument("--threads", type=int, default=10)
     p.add_argument("--force", action="store_true", help="rerun arms that are already cached")
     p.add_argument("--no-score", action="store_true")
+    p = sub.add_parser("vol")
+    p.add_argument("--freq", default="all", choices=["weekly", "monthly", "all"])
+    p.add_argument("--limit", type=int, default=None, help="smoke run: first N test rows only")
+    p = sub.add_parser("range")
+    p.add_argument("--freq", default="all", choices=["weekly", "monthly", "all"])
     args = ap.parse_args(argv)
     cfg = load_config(args.config) if args.config else load_config()
     {"fetch": cmd_fetch, "build": cmd_build, "backtest": cmd_backtest,
      "forecast": cmd_forecast, "chronos": cmd_chronos, "intervals": cmd_intervals,
-     "blocks": cmd_blocks, "foundation": cmd_foundation}[args.cmd](cfg, args)
+     "blocks": cmd_blocks, "foundation": cmd_foundation, "vol": cmd_vol, "range": cmd_range}[args.cmd](cfg, args)
 
 
 if __name__ == "__main__":
