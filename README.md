@@ -1,5 +1,7 @@
 # goldcast 🪙
 
+**English** | [العربية](README.ar.md)
+
 **Honest gold-price forecasting.** Eleven pre-registered studies, about 20 models (from a random walk to
 Chronos-2, TabPFN-2 and TabFM), ten years of walk-forward backtests, and a dashboard that tells you
 what gold might do next week, next month or in two years, and how much to trust it.
