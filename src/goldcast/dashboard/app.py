@@ -1,4 +1,4 @@
-"""Research dashboard over the cached R-002..R-005 forecasts.
+"""Gold forecast dashboard: a plain-language Forecast tab, then research tabs over the cached R-002..R-005 forecasts.
 
 Run: streamlit run src/goldcast/dashboard/app.py
 """
@@ -12,8 +12,9 @@ import streamlit as st
 
 from goldcast.config import load_config
 from goldcast.dashboard import data as D
+from goldcast.dashboard import horizon as H
 
-st.set_page_config(page_title="Gold forecast research", layout="wide")
+st.set_page_config(page_title="Gold forecast", page_icon="🪙", layout="wide")
 cfg = load_config()
 
 
@@ -32,8 +33,40 @@ def panel(freq):
     return X, raw[cfg.target]
 
 
+@st.cache_data
+def raw_data(stamp):
+    from goldcast.data.store import load_raw
+
+    return load_raw(cfg)
+
+
+def data_stamp():
+    from goldcast.data.store import load_raw
+
+    return str(load_raw(cfg)[cfg.target].dropna().index.max().date())
+
+
+@st.cache_data(show_spinner="Fitting the models for this horizon...")
+def horizon(label, stamp):
+    if H.HORIZONS[label][1]:
+        return H.short(cfg, label)
+    return H.long(cfg, raw_data(stamp), label)
+
+
 # ---- sidebar
-st.sidebar.title("Gold forecast research")
+st.sidebar.title("🪙 Gold forecast")
+stamp = data_stamp()
+age = (pd.Timestamp.today().normalize() - pd.Timestamp(stamp)).days
+st.sidebar.markdown(f"Latest price in the data: **{stamp}** ({age} days ago)")
+if st.sidebar.button("Update prices", help="Downloads the latest data for every series (takes a minute)."):
+    from goldcast.data.store import fetch_all
+
+    with st.spinner("Downloading..."):
+        fetch_all(cfg)
+    st.cache_data.clear()
+    st.rerun()
+st.sidebar.divider()
+st.sidebar.subheader("Research tabs")
 freq = st.sidebar.radio("Frequency", ["weekly", "monthly"], horizontal=True)
 fc = forecasts(freq)
 lo, hi = fc.y.index.min().date(), fc.y.index.max().date()
@@ -52,7 +85,122 @@ st.sidebar.warning("No model has beaten the random walk (points) or GARCH (inter
 pb = D.point_board(fc, mask, cfg.regime_start)
 ib = D.interval_board(fc, mask, cfg.regime_start)
 
-tab_lb, tab_fc, tab_err, tab_in, tab_next = st.tabs(["Leaderboard", "Forecast vs actual", "Error over time", "Input data", "Next period"])
+tab_main, tab_lb, tab_fc, tab_err, tab_in, tab_next = st.tabs(
+    ["🔮 Forecast", "Leaderboard", "Forecast vs actual", "Error over time", "Input data", "Next period"])
+
+with tab_main:
+    left, right = st.columns([3, 2])
+    label = left.radio("How far ahead?", list(H.HORIZONS), index=1, horizontal=True)
+    hz = horizon(label, stamp)
+    live_pts = [m for m in hz.point_board["model"] if m in hz.point]
+    live_rng = [m for m in hz.range_board["model"] if m in hz.quant]
+    m_pt = right.selectbox("Price model", live_pts, index=live_pts.index(hz.best_point), key=f"pt_{label}",
+                           format_func=lambda m: H.name(m) + ("  ⭐ best" if m == hz.best_point else ""),
+                           help="⭐ = lowest error in the backtest at this horizon (the default).")
+    m_rg = right.selectbox("Range model", live_rng, index=live_rng.index(hz.best_range), key=f"rg_{label}",
+                           format_func=lambda m: H.name(m) + ("  ⭐ best" if m == hz.best_range else ""),
+                           help="⭐ = best-scored 80% range in the backtest at this horizon.")
+
+    c = hz.point[m_pt]
+    q = hz.quant[m_rg]
+    band = (c + q[0] - q[1], c, c + q[2] - q[1])  # the range's width, centred on the chosen price model
+    p0 = hz.price
+    st.markdown(f"#### Gold on **{hz.target:%d %b %Y}** ({label} after {hz.origin:%d %b %Y}, "
+                f"when it was **${p0:,.0f}**)")
+    k = st.columns(5)
+    k[0].metric("Forecast price", f"${p0 * np.exp(c):,.0f}", f"{np.expm1(c):+.1%}")
+    tip = "80% range: in the backtest about 8 in 10 prices landed inside a range like this; 1 in 5 did not."
+    k[1].metric("Low end (10%)", f"${p0 * np.exp(band[0]):,.0f}", f"{np.expm1(band[0]):+.1%}", help=tip)
+    k[2].metric("High end (90%)", f"${p0 * np.exp(band[2]):,.0f}", f"{np.expm1(band[2]):+.1%}", help=tip)
+    k[3].metric("Chance gold is higher", f"{hz.p_up(m_rg, c):.0%}",
+                help="From the forecast and the range width, assuming a bell-shaped spread.")
+    row = hz.point_board.set_index("model").loc[m_pt]
+    k[4].metric("Backtest: right direction", f"{row['hit']:.0%}" if m_pt != "rw" else "n/a",
+                f"error {row['mse/rw']:.2f}× no-change", delta_color="off",
+                help="Share of past forecasts that got up/down right, and squared error relative to "
+                     "assuming no change (below 1 is better).")
+    st.info("**Not financial advice.** In every test here, no model beat the simple baselines by a margin "
+            "that survives a significance test, so the ⭐ best model is only the one with the lowest past error. "
+            "Treat the range as the main message.", icon="ℹ️")
+
+    # price history and the forecast cone
+    g = raw_data(stamp)[cfg.target].dropna()
+    look = pd.DateOffset(months=max(12, 2 * (H.HORIZONS[label][0] or 1)))
+    hist = g.loc[hz.origin - look:]
+    cone = H.path(hz, c, band)
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=hist.index, y=hist, name="gold price", line=dict(color="goldenrod", width=2)))
+    fig.add_trace(go.Scatter(x=cone.index, y=cone["hi"], line=dict(width=0), showlegend=False, hoverinfo="skip"))
+    fig.add_trace(go.Scatter(x=cone.index, y=cone["lo"], fill="tonexty", line=dict(width=0),
+                             fillcolor="rgba(212,175,55,0.25)", name="80% range"))
+    fig.add_trace(go.Scatter(x=cone.index, y=cone["mid"], name=H.name(m_pt), line=dict(color="gray", dash="dash")))
+    others = [m for m in live_pts if m != m_pt]
+    fig.add_trace(go.Scatter(x=[hz.target] * len(others), y=[p0 * np.exp(hz.point[m]) for m in others],
+                             mode="markers+text", text=[H.name(m).split(" (")[0] for m in others],
+                             textposition="middle left", marker=dict(size=9, symbol="diamond"),
+                             name="other models"))
+    fig.update_layout(height=460, hovermode="x unified", legend=dict(orientation="h", y=1.02, yanchor="bottom"), yaxis_title="USD / oz",
+                      margin=dict(t=20))
+    st.plotly_chart(fig, use_container_width=True)
+
+    # comparison
+    st.markdown("#### Compare the models")
+    pb_ = hz.point_board
+    live = lambda m, f: f(hz.point[m]) if m in hz.point else np.nan
+    t = pd.DataFrame({
+        "": np.where(pb_["model"] == hz.best_point, "⭐", ""),
+        "Model": pb_["model"].map(H.name),
+        "Forecast price": [live(m, lambda v: p0 * np.exp(v)) for m in pb_["model"]],
+        "Change": [live(m, np.expm1) for m in pb_["model"]],
+        "Backtest error vs no-change": pb_["mse/rw"],
+        "Since 2023": pb_["mse/rw 2023+"],
+        "Right direction": np.where(pb_["model"] == "rw", np.nan, pb_["hit"]),
+        "Rank": pb_["rank"],
+        "Proven better?": np.where(pb_["significant"], "✅ yes", "no"),
+    })
+    st.dataframe(t.style.format({"Forecast price": "${:,.0f}", "Change": "{:+.1%}",
+                                 "Backtest error vs no-change": "{:.2f}", "Since 2023": "{:.2f}",
+                                 "Right direction": "{:.0%}"}, na_rep="backtest only"),
+                 hide_index=True, use_container_width=True)
+    rb_ = hz.range_board
+    edge = lambda m, j: p0 * np.exp(c + hz.quant[m][j] - hz.quant[m][1]) if m in hz.quant else np.nan
+    r = pd.DataFrame({
+        "": np.where(rb_["model"] == hz.best_range, "⭐", ""),
+        "Range model": rb_["model"].map(H.name),
+        "Low (10%)": [edge(m, 0) for m in rb_["model"]],
+        "High (90%)": [edge(m, 2) for m in rb_["model"]],
+        "Backtest loss vs reference": rb_["loss/ref"],
+        "Prices inside (target 80%)": rb_["coverage 80%"],
+        "Rank": rb_["rank"],
+        "Proven better?": np.where(rb_["significant"], "✅ yes", "no"),
+    })
+    st.dataframe(r.style.format({"Low (10%)": "${:,.0f}", "High (90%)": "${:,.0f}",
+                                 "Backtest loss vs reference": "{:.3f}", "Prices inside (target 80%)": "{:.0%}"},
+                                na_rep="backtest only"), hide_index=True, use_container_width=True)
+    st.caption(f"Ranges are centred on the selected price model. {hz.note} 'Proven better?' = beats no-change "
+               "(prices) or the reference range at p < 0.05 after Holm correction.")
+
+    # track record
+    st.markdown("#### Track record: past forecasts vs what happened")
+    pick = st.multiselect("Models", list(hz.hist_point), default=list(dict.fromkeys([m_pt, "rw"])),
+                          format_func=H.name, key=f"tr_{label}")
+    p_at = g.reindex(hz.y.index, method="ffill").values
+    tgt = pd.DatetimeIndex([d + hz.step for d in hz.y.index])
+    fig = go.Figure()
+    if m_rg in hz.hist_quant:
+        hq = hz.hist_quant[m_rg].reindex(hz.y.index)
+        fig.add_trace(go.Scatter(x=tgt, y=p_at * np.exp(hq[0.9].values), line=dict(width=0),
+                                 showlegend=False, hoverinfo="skip"))
+        fig.add_trace(go.Scatter(x=tgt, y=p_at * np.exp(hq[0.1].values), fill="tonexty", line=dict(width=0),
+                                 fillcolor="rgba(212,175,55,0.2)", name=f"{H.name(m_rg)} 80% range"))
+    fig.add_trace(go.Scatter(x=tgt, y=p_at * np.exp(hz.y.values), name="actual price",
+                             line=dict(color="goldenrod", width=3)))
+    for m in pick:
+        fig.add_trace(go.Scatter(x=tgt, y=p_at * np.exp(hz.hist_point[m].reindex(hz.y.index).values),
+                                 name=H.name(m), mode="lines"))
+    fig.update_layout(height=420, hovermode="x unified", legend=dict(orientation="h", y=1.02, yanchor="bottom"), yaxis_title="USD / oz",
+                      xaxis_title="date the forecast was for", margin=dict(t=20))
+    st.plotly_chart(fig, use_container_width=True)
 
 
 def _style(df, ratio_col):
